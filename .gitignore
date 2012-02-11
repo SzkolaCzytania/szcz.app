@@ -9,3 +9,4 @@ include
 local
 build
 git_src
+*.db
