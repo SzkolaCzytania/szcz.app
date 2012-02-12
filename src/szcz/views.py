@@ -26,14 +26,14 @@ def success(context, request):
     user = DBSession.query(User).get(email)
     if not user:
         user = autoregister(context.profile)
-    request.session['user'] = user
+    request.session['fullname'] = user.fullname
     return HTTPFound(location='/logged_in')
 
 
 @view_config(route_name='logged_in', renderer='templates/home.pt')
 def logged_in(context, request):
     return {'request': request,
-            'fullname': request.session.get('user').fullname}
+            'fullname': request.session.get('fullname')}
 
 
 def autoregister(profile):
