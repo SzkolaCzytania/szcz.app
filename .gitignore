@@ -10,3 +10,5 @@ local
 build
 git_src
 *.db
+development.ini
+linode.cfg

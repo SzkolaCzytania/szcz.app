@@ -9,8 +9,11 @@ def main(global_config, **settings):
     DBSession.configure(bind=engine)
     config = Configurator(settings=settings)
     config.include('pyramid_fanstatic')
+    config.include('velruse.providers.google')
+    config.include('velruse.providers.facebook')
+    config.include('velruse.providers.twitter')
     config.add_route('home', '/')
     config.scan()
     config.set_root_factory('szcz.views.Context')
+    config.set_session_factory('szcz.views.session_factory')
     return config.make_wsgi_app()
-

@@ -3,7 +3,7 @@ from fanstatic import Resource
 from fanstatic import Group
 from js.bootstrap import bootstrap_responsive_css, bootstrap_js
 
-library = Library('', 'resources')
+library = Library('szcz', 'resources')
 css_resource = Resource(library, 'main.css', depends=[bootstrap_responsive_css])
 js_resource = Resource(library, 'main.js', depends=[bootstrap_js])
 szcz = Group([css_resource, js_resource,])

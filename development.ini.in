@@ -7,12 +7,20 @@ pyramid.debug_notfound = false
 pyramid.debug_routematch = false
 pyramid.debug_templates = true
 pyramid.default_locale_name = en
-pyramid.includes = pyramid_debugtoolbar
-                   pyramid_tm
-
+pyramid.includes = pyramid_debugtoolbar pyramid_tm
 sqlalchemy.url = sqlite:///%(here)s/szcz.db
+
 fanstatic.bottom = true
 fanstatic.debug = true
+
+velruse.store = velruse.store.sqlstore.SQLStore
+velruse.store.url =  sqlite:///%(here)s/szcz.db
+velruse.openid.store = openid.store.memstore.MemoryStore
+velruse.openid.realm = ${conf:domain}
+velruse.facebook.app_id = ${conf:facebook_app_id}
+velruse.facebook.app_secret = ${conf:facebook_app_secret}
+velruse.twitter.consumer_key = ${conf:twitter_consumer_key}
+velruse.twitter.consumer_secret = ${conf:twitter_consumer_secret}
 
 [server:main]
 use = egg:waitress#main

@@ -1,11 +1,72 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
-<head>
-  <title>The Pyramid Web Application Development Framework</title>
-  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-  <meta name="keywords" content="python web application" />
-  <meta name="description" content="pyramid web application" />
-</head>
-<body>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Szkoła Czytania</a>
+          <div class="nav-collapse">
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="hero-unit">
+        <h1>Witaj w Szkole Czytania!</h1>
+        <p>Zaloguj się za pomocą wybranego serwisu:</p>
+        <p>
+        <img src="${szcz_url}/img/facebook.png"/>
+        <form action="${request.application_url}/facebook/login" method="post">
+                <button type="submit" class="btn btn-large btn-primary">
+                  <i class="icon-off icon-white"></i>
+                  Login with facebook
+                </button>
+           </form>
+        </p>
+        <p>
+          <img src="${szcz_url}/img/twitter.png"/>
+        <form action="${request.application_url}/twitter/login" method="post">
+                <button type="submit" class="btn btn-large btn-primary">
+                  <i class="icon-off icon-white"></i>
+                  Login with twitter
+                </button>
+           </form>
+        </p>
+        <p>
+          <img src="${szcz_url}/img/google.png"/>
+          <form action="${request.application_url}/google/login" method="post">
+                <input type="hidden" name="popup_mode" value="popup">
+                <input type="hidden" name="openid.mode" value="checkid_immediate">
+                <input type="hidden" name="openid.ns" value="http://specs.openid.net/auth/2.0">
+                <input type="hidden" name="openid.claimed_id" value="http://specs.openid.net/auth/2.0/identifier_select">
+                <input type="hidden" name="openid.identity" value="http://specs.openid.net/auth/2.0/identifier_select">
+                <input type="hidden" name="openid.return_to" value="${request.application_url}/login">
+                <button type="submit" class="btn btn-large btn-primary">
+                  <i class="icon-off icon-white"></i>
+                  Login with google
+                </button>
+              </form>
+        </p>
+      </div>
+
+
+    </div> <!-- /container -->
+
+  </body>
 </html>
+
