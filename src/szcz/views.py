@@ -1,32 +1,45 @@
 from pyramid.view import view_config
-from pyramid.session import UnencryptedCookieSessionFactoryConfig
-from pyramid.response import Response
+from pyramid.httpexceptions import HTTPFound
 from szcz.resources import szcz, library
+from szcz.models import User, DBSession
 import fanstatic
 
 
-session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
-
-
 class Context(object):
-    """
-    Default context factory.
-    """
-
+    """  Default context factory. """
     def __init__(self, request):
         szcz.need()
         self.request = request
 
 
-@view_config(route_name='home', renderer='templates/home.pt')
-def my_view(request):
+@view_config(route_name='home', renderer='templates/login_form.pt')
+def home(request):
     needed = fanstatic.get_needed()
     szcz_url = needed.library_url(library)
     return {'szcz_url': szcz_url,
             'request': request}
 
 
-@view_config(context='velruse.api.AuthenticationComplete')
+@view_config(context='velruse.api.AuthenticationComplete', renderer='templates/home.pt')
 def success(context, request):
-    return Response(str({'profile': context.profile,
-                     'credentials': context.credentials,}))
+    email = context.profile.get('verifiedEmail')
+    user = DBSession.query(User).get(email)
+    if not user:
+        user = autoregister(context.profile)
+    request.session['user'] = user
+    return HTTPFound(location='/logged_in')
+
+
+@view_config(route_name='logged_in', renderer='templates/home.pt')
+def logged_in(context, request):
+    return {'request': request,
+            'fullname': request.session.get('user').fullname}
+
+
+def autoregister(profile):
+    session = DBSession()
+    user = User(given_name = profile['name']['givenName'],
+                family_name = profile['name']['familyName'],
+                email = profile.get('verifiedEmail'))
+    session.add(user)
+    return user

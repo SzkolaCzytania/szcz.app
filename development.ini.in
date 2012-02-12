@@ -10,6 +10,13 @@ pyramid.default_locale_name = en
 pyramid.includes = pyramid_debugtoolbar pyramid_tm
 sqlalchemy.url = sqlite:///%(here)s/szcz.db
 
+session.type = file
+session.data_dir = %(here)s/data/sessions/data
+session.lock_dir = %(here)s/data/sessions/lock
+session.key = szcz
+session.secret = ${conf:session_secret}
+session.cookie_on_exception = true
+
 fanstatic.bottom = true
 fanstatic.debug = true
 

@@ -12,3 +12,4 @@ git_src
 *.db
 development.ini
 linode.cfg
+data

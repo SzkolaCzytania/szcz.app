@@ -16,7 +16,8 @@ requires = [
     'waitress',
     'velruse',
     'pyramid_fanstatic',
-    'js.bootstrap'
+    'js.bootstrap',
+    'pyramid_beaker',
     ]
 
 setup(name='szcz',
