@@ -11,5 +11,6 @@ build
 git_src
 *.db
 development.ini
+production.ini
 linode.cfg
 data
