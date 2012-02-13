@@ -18,6 +18,9 @@ requires = [
     'pyramid_fanstatic',
     'js.bootstrap',
     'pyramid_beaker',
+    'deform_bootstrap',
+    'deform',
+    'fanstaticdeform'
     ]
 
 setup(name='szcz',

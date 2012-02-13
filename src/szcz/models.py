@@ -25,3 +25,4 @@ class User(Base):
     @property
     def fullname(self):
         return '%s %s' % (self.given_name, self.family_name)
+
