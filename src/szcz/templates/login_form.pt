@@ -2,10 +2,8 @@
        xmlns:tal="http://xml.zope.org/namespaces/tal"
        xmlns:metal="http://xml.zope.org/namespaces/metal"
        metal:use-macro="main.macros['main']">
-<metal:container fill-slot="container">
-        <div class="span4">&nbsp;</div>
-        <div class="span4">
-          <div class="well" style="text-align:center">
+  <metal:container fill-slot="container">
+      <div style="text-align: center">
             <h1>Zaloguj się</h1>
             <p>
               <form action="${request.application_url}/facebook/login" method="post">
@@ -33,7 +31,6 @@
                   Google
                 </button>
               </form>
-            </div>
           </div>
     </metal:container>
 </html>

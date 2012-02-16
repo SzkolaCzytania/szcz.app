@@ -10,34 +10,68 @@
     <meta name="author" content="">
   </head>
   <body>
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="/">Szkoła Czytania</a>
-          <div class="nav-collapse" tal:condition="request.user">
-            <ul class="nav pull-right">
-              <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="icon-user icon-white"></i>
-                ${request.user.fullname}<b class="caret"></b>
-              </a>
-                <ul class="dropdown-menu">
-                   <li><a href="${request.application_url}/logout">Logout</a></li>
-                </ul>
-            </li>
-          </ul>
-        </div>
+    <div id="wrap">
+      <!-- navbar -->
+      <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container-fluid">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="/"><img src="/fanstatic/szcz/img/logo_mini.png"></a>
+            <div class="nav-collapse" tal:condition="request.user">
+              <ul class="nav pull-right">
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <i class="icon-user icon-white"></i>
+                  ${request.user.fullname}<b class="caret"></b>
+                </a>
+                  <ul class="dropdown-menu">
+                    <li><a href="${request.application_url}/logout">Logout</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
+      <!-- end navbar -->
+      <div id="container-wrap">
+        <div class="container-fluid paper">
+          <div class="row-fluid">
+            <div class="span3" tal:condition="request.user">
+              <div class="well sidebar-nav">
+                <ul class="nav nav-list">
+                  <li class="nav-header">Sidebar</li>
+                  <li class="active"><a href="#">Link</a></li>
+                  <li><a href="#">Link</a></li>
+                  <li><a href="#">Link</a></li>
+                  <li><a href="#">Link</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="span4" tal:condition="not request.user">&nbsp;</div>
+            <div class="span9" tal:attributes="class request.user and 'span9' or 'span4'">
+              <div class="well">
+                <metal:container define-slot="container" />
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+      </div>
     </div>
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <metal:container define-slot="container" />
-    </div> <!-- /container -->
+    <div id="footer">
+        <div class="borderFooter"><hr></div>
+        <div class="container-fluid">
+          <div class="row-fluid">
+            <div class="span4">&nbsp;</div>
+            <div class="copyright span4">
+              © 2011 - All rights reserved
+            </div>
+          </div>
+        </div>
+    </div>
   </body>
 </html>
