@@ -1,23 +1,30 @@
 /* main css style sheet for  */
 @media (min-width: 980px) {
-  body {
-    padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+  #container-wrap {
+    padding-top: 60px;
+  }
+  #body-wrapper,
+  #visual-portal-wrapper {
+    min-height: 100%;
+  }
+  #body-wrapper {
+    background: #000 url(img/bg_pattern_photo.png) repeat-x left -60px;
+  }
+  #visual-portal-wrapper {
+    background: transparent url(img/bg_photo.jpg) no-repeat center -60px;
   }
 }
-body {
-  background: transparent url(img/bg_paper.jpg) repeat left top;
-/*  background: #000 url(img/bg_pattern_photo.png) repeat-x left top;*/
-}
-
-.paper {
-  background: transparent url(img/bg_paper.jpg) repeat left top;
+@media (max-width: 980px) {
+  #footer {
+    display: none;
+  }
+  body{
+    background: #000 url(img/bg_photo.jpg) no-repeat center -60px;
+  }
 }
 
 #wrap {
  min-height: 100%;
-}
-#container-wrap {
- padding-bottom: 70px;
 }
 
 #footer {

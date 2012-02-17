@@ -2,36 +2,56 @@
        xmlns:tal="http://xml.zope.org/namespaces/tal"
        xmlns:metal="http://xml.zope.org/namespaces/metal"
        metal:use-macro="main.macros['main']">
-  <metal:container fill-slot="container">
-      <div style="text-align: center">
-            <h1>Zaloguj się</h1>
-            <p>
-              <form action="${request.application_url}/facebook/login" method="post">
-                <input type="hidden" name="scope" value="email" />
-                <button type="submit" class="btn btn-large btn-primary">
-                  <i class="icon-off icon-white"></i>
-                  Facebook
-                </button>
-              </form>
-              <form action="${request.application_url}/twitter/login" method="post">
-                <button type="submit" class="btn btn-large btn-primary" disabled>
-                  <i class="icon-off icon-white"></i>
-                  Twitter
-                </button>
-              </form>
-              <form action="${request.application_url}/google/login" method="post">
-                <input type="hidden" name="popup_mode" value="popup">
-                <input type="hidden" name="openid.mode" value="checkid_immediate">
-                <input type="hidden" name="openid.ns" value="http://specs.openid.net/auth/2.0">
-                <input type="hidden" name="openid.claimed_id" value="http://specs.openid.net/auth/2.0/identifier_select">
-                <input type="hidden" name="openid.identity" value="http://specs.openid.net/auth/2.0/identifier_select">
-                <input type="hidden" name="openid.return_to" value="${request.application_url}/login">
-                <button type="submit" class="btn btn-large btn-primary">
-                  <i class="icon-off icon-white"></i>
-                  Google
-                </button>
-              </form>
+       <metal:container fill-slot="container">
+
+          <div class="modal">
+              <div class="modal-header">
+                  <h3>Zaloguj się w Szkole Czytania</h3>
+              </div>
+              <div class="modal-body">
+                <p>Wybierz sposób logowania w serwisie. Jeżeli nie masz jeszcze konta, zostanie ono automatycznie utworzone.</p>
+              </div>
+              <div class="modal-footer">
+                  <div class="row-fluid">
+                    <div class="span3">&nbsp;
+                    </div>
+                    <div class="span3">
+                      <form action="${request.application_url}/facebook/login" method="post">
+                        <input type="hidden" name="scope" value="email" />
+                        <button type="submit" class="btn btn-primary">
+                          <i class="icon-off icon-white"></i>
+                          Facebook
+                        </button>
+                      </form>
+                    </div><div class="span3">
+                      <form action="${request.application_url}/twitter/login" method="post">
+                        <button type="submit" class="btn btn-info" disabled>
+                          <i class="icon-off icon-white"></i>
+                          Twitter
+                        </button>
+                      </form>
+                    </div><div class="span3">
+                      <form action="${request.application_url}/google/login" method="post">
+                        <input type="hidden" name="popup_mode" value="popup">
+                        <input type="hidden" name="openid.mode" value="checkid_immediate">
+                        <input type="hidden" name="openid.ns" value="http://specs.openid.net/auth/2.0">
+                        <input type="hidden" name="openid.claimed_id" value="http://specs.openid.net/auth/2.0/identifier_select">
+                        <input type="hidden" name="openid.identity" value="http://specs.openid.net/auth/2.0/identifier_select">
+                        <input type="hidden" name="openid.return_to" value="${request.application_url}/login">
+                        <button type="submit" class="btn btn-success">
+                          <i class="icon-off icon-white"></i>
+                          Google
+                        </button>
+                      </form>
+                    </div>
+              </div>
+            </div>
           </div>
+
+
+<!--       
+    <p>Wybierz z pośród dostępnych metod logowania; </p>
+          -->          
     </metal:container>
 </html>
 

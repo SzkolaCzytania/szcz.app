@@ -10,7 +10,7 @@
     <meta name="author" content="">
   </head>
   <body>
-    <div id="wrap">
+    <div id="body-wrapper">
       <!-- navbar -->
       <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
@@ -38,8 +38,8 @@
         </div>
       </div>
       <!-- end navbar -->
-      <div id="container-wrap">
-        <div class="container-fluid paper">
+      <div id="visual-portal-wrapper">
+        <div class="container-fluid" id="container-wrap">
           <div class="row-fluid">
             <div class="span3" tal:condition="request.user">
               <div class="well sidebar-nav">
@@ -52,12 +52,14 @@
                 </ul>
               </div>
             </div>
-            <div class="span4" tal:condition="not request.user">&nbsp;</div>
-            <div class="span9" tal:attributes="class request.user and 'span9' or 'span4'">
+            <div class="span9" tal:condition="request.user">
               <div class="well">
                 <metal:container define-slot="container" />
               </div>
             </div>
+            <tal:anonymous condition="not request.user">
+              <metal:container define-slot="container"/>
+            </tal:anonymous>
           </div>
         </div> <!-- /container -->
       </div>
