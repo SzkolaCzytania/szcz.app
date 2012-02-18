@@ -52,10 +52,12 @@ def usercreate(context, request):
         try:
             appstruct = form.validate(items)
         except deform.ValidationFailure, e:
+            request.session.flash({'title':u'Błędy','body': u'Popraw zaznaczone błędy'},queue='error')
             return {'form': e.render(),
                     'main':  get_renderer('templates/master.pt').implementation(),}
 
         user = merge_session_with_post(user, appstruct)
+        request.session.flash({'title':u'Gotowe!','body': u'Aktualizacja profilu zakończyła się sukcesem.'},queue='success')
         return HTTPFound(location = '/')
 
     appstruct = record_to_appstruct(user)

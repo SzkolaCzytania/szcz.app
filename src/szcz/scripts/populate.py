@@ -1,6 +1,5 @@
 import os
 import sys
-import transaction
 
 from sqlalchemy import engine_from_config
 
@@ -9,9 +8,8 @@ from pyramid.paster import (
     setup_logging,
     )
 
-from szcz.models import (
+from szcz import (
     DBSession,
-    User,
     Base,
     )
 
@@ -27,9 +25,10 @@ def main(argv=sys.argv):
     config_uri = argv[1]
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
-    engine = engine_from_config(settings, 'sqlalchemy.')
+    engine = engine_from_config(settings, 'sqlalchemy.apps.')
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
+
 #    with transaction.manager:
 #        model = User(email=u'pippo@email.it')
 #        DBSession.add(model)

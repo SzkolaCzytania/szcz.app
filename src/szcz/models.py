@@ -3,20 +3,10 @@ from sqlalchemy import (
     Text,
     String,
     Integer,
-    Boolean
+    Boolean,
     )
+from szcz import Base
 
-from sqlalchemy.ext.declarative import declarative_base
-
-from sqlalchemy.orm import (
-    scoped_session,
-    sessionmaker,
-    )
-
-from zope.sqlalchemy import ZopeTransactionExtension
-
-DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
-Base = declarative_base()
 
 class User(Base):
     __tablename__ = 'users'
@@ -31,4 +21,3 @@ class User(Base):
     @property
     def fullname(self):
         return '%s %s' % (self.given_name, self.family_name)
-

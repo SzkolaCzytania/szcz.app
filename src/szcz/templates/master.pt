@@ -48,19 +48,44 @@
       <!-- end navbar -->
       <div id="visual-portal-wrapper">
         <div class="container-fluid" id="container-wrap">
+
           <div class="row-fluid">
             <div class="span3" tal:condition="request.user">
               <div class="well sidebar-nav">
                 <ul class="nav nav-list">
-                  <li class="nav-header">Sidebar</li>
-                  <li class="active"><a href="#">Link</a></li>
-                  <li><a href="#">Link</a></li>
-                  <li><a href="#">Link</a></li>
-                  <li><a href="#">Link</a></li>
+                  <li class="nav-header">
+                    <i class="icon-home"></i>
+                    Grupy
+                  </li>
+                  <li><a href="#">Dodaj nową grupę</a></li>
+                  <li><a href="#">Moje grupy</a></li>
+                  <li><a href="#">Szukaj grupy</a></li>
+                </ul>
+                <ul class="nav nav-list">
+                  <li class="nav-header">
+                    <i class="icon-book"></i>
+                    Książki
+                  </li>
+                  <li><a href="#">Książki które czytam</a></li>
+                  <li><a href="/books">Wszystkie książki</a></li>
                 </ul>
               </div>
             </div>
             <div class="span9" tal:condition="request.user">
+              <tal:flash repeat="msg request.session.pop_flash(queue='success')">
+                <div class="alert alert-block alert-success fade in">
+                    <a class="close" data-dismiss="alert" href="#">×</a>
+                    <h4 class="alert-heading">${msg['title']}</h4>
+                    <p>${msg['body']}</p>
+                  </div>
+              </tal:flash>
+              <tal:flash repeat="msg request.session.pop_flash(queue='error')">
+                <div class="alert alert-block alert-error fade in">
+                    <a class="close" data-dismiss="alert" href="#">×</a>
+                    <h4 class="alert-heading">${msg['title']}</h4>
+                    <p>${msg['body']}</p>
+                  </div>
+              </tal:flash>
               <div class="well">
                 <metal:container define-slot="container" />
               </div>

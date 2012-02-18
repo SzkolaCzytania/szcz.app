@@ -8,7 +8,8 @@ pyramid.debug_routematch = false
 pyramid.debug_templates = true
 pyramid.default_locale_name = en
 pyramid.includes = pyramid_debugtoolbar pyramid_tm
-sqlalchemy.url = sqlite:///%(here)s/szcz.db
+sqlalchemy.apps.url = postgresql://postgres:postgres@localhost/szcz_apps
+sqlalchemy.mirror.url = postgresql://postgres:postgres@localhost/szcz_mirror
 
 session.type = file
 session.data_dir = %(here)s/data/sessions/data

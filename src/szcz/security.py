@@ -3,7 +3,8 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.security import remember, forget
 from pyramid.security import unauthenticated_userid
 from pyramid.renderers import get_renderer
-from szcz.models import User, DBSession
+from szcz.models import User
+from szcz import DBSession
 
 
 def get_user(request):
