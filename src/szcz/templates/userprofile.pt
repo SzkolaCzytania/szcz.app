@@ -2,10 +2,12 @@
        xmlns:tal="http://xml.zope.org/namespaces/tal"
        xmlns:metal="http://xml.zope.org/namespaces/metal"
        metal:use-macro="main.macros['main']">
-<metal:container fill-slot="container">
-            <h3>User registratoin</h3>
-            <br/>
-            <tal:form replace="structure form"/>
-</metal:container>
+       <metal:container fill-slot="container">
+
+         <h3>Profil użytkownika ${request.user.email}</h3>
+         <br/>
+         <tal:form replace="structure form"/>
+
+  </metal:container>
 </html>
 

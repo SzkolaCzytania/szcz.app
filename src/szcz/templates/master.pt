@@ -30,7 +30,14 @@
                   ${request.user.fullname}<b class="caret"></b>
                 </a>
                   <ul class="dropdown-menu">
-                    <li><a href="${request.application_url}/logout">Logout</a></li>
+                    <li><a href="${request.application_url}/profile">
+                      <i class="icon-lock"></i>
+                        Profil
+                    </a></li>
+                    <li><a href="${request.application_url}/logout">
+                      <i class="icon-off"></i>
+                      Wyloguj się
+                    </a></li>
                   </ul>
                 </li>
               </ul>

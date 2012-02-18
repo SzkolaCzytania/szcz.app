@@ -2,8 +2,11 @@ from pyramid.config import Configurator
 from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid_beaker import session_factory_from_settings
+from pkg_resources import resource_filename
 from sqlalchemy import engine_from_config
+from deform import Form
 from .models import DBSession
+
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -25,6 +28,12 @@ def main(global_config, **settings):
     config.include('velruse.providers.twitter')
     config.include('pyramid_beaker')
     config.include('deform_bootstrap')
+
+    deform_templates = resource_filename('deform', 'templates')
+    deform_bootstrap_templates = resource_filename('deform_bootstrap', 'templates')
+    deform_szcz_templates = resource_filename('szcz', 'templates')
+    search_path = (deform_szcz_templates, deform_bootstrap_templates, deform_templates)
+    Form.set_zpt_renderer(search_path)
 
     config.add_route('home', '/')
     config.add_route('login_form', '/login_form')

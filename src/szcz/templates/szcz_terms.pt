@@ -1,0 +1,10 @@
+<label class="checkbox">
+  <input type="checkbox"
+        name="${field.name}" value="${field.widget.true_val}"
+        id="${field.oid}"
+        tal:attributes="checked cstruct == field.widget.true_val;
+                        class field.widget.css_class"/>
+                        Akceptuję regulamin Szkoły Czytania
+</label>
+<p class="help-block"><strong>Uwaga:</strong> Pełną treść regulaminu możesz znaleźć na stronie:
+<a href="http://www.szkolaczytania.org.pl/regulamin">www.szkolaczytania.org.pl/regulamin</a>.</p>
