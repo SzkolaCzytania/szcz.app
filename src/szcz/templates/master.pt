@@ -1,8 +1,8 @@
+<metal:main define-macro="main">
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
-      xmlns:metal="http://xml.zope.org/namespaces/metal"
-      metal:define-macro="main">
+      xmlns:metal="http://xml.zope.org/namespaces/metal">
   <head>
     <meta charset="utf-8">
     <title>Szkoła czytania</title>
@@ -78,3 +78,4 @@
     </div>
   </body>
 </html>
+</metal:main>

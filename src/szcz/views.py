@@ -7,7 +7,8 @@ from szcz.resources import szcz
 class Context(object):
     """  Default context factory. """
 
-    __acl__ = [ (Allow, Authenticated, 'view')]
+    __acl__ = [(Allow, Authenticated, 'view'),
+               (Allow, Authenticated, 'user_profile'),]
 
     def __init__(self, request):
         szcz.need()

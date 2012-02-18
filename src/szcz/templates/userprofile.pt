@@ -3,14 +3,9 @@
        xmlns:metal="http://xml.zope.org/namespaces/metal"
        metal:use-macro="main.macros['main']">
 <metal:container fill-slot="container">
-        <div class="span4">&nbsp;</div>
-        <div class="span4">
-          <div class="well">
             <h3>User registratoin</h3>
             <br/>
             <tal:form replace="structure form"/>
-          </div>
-        </div>
 </metal:container>
 </html>
 

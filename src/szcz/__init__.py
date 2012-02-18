@@ -29,7 +29,7 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     config.add_route('login_form', '/login_form')
     config.add_route('logout', '/logout')
-    config.add_route('usercreate', '/usercreate')
+    config.add_route('userprofile', '/profile')
 
     config.add_static_view('deform_static', 'deform:static')
     config.scan()

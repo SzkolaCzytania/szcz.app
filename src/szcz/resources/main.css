@@ -5,7 +5,7 @@
   }
   #body-wrapper,
   #visual-portal-wrapper {
-    min-height: 100%;
+    height: inherit;
   }
   #body-wrapper {
     background: #000 url(img/bg_pattern_photo.png) repeat-x left -60px;
@@ -29,8 +29,14 @@
   }
 }
 
+body {
+   height: 100%;
+   width: 100%;
+   position: absolute;
+}
+
 #wrap {
- min-height: 100%;
+ height: inherit;
 }
 
 #footer {
