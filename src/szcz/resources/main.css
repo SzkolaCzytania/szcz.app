@@ -6,14 +6,9 @@
   }
 }
 
-@media (max-height: 600px) {
+@media (max-height: 600px) and (min-width:480px){
   .modal{
     margin: -100px 0 0 -280px;
-  }
-}
-@media (max-height: 300px) {
-  .modal{
-    margin: 0px 0 0 -280px;
   }
 }
 
