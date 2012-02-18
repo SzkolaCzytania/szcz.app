@@ -23,6 +23,12 @@
   }
 }
 
+@media (max-width: 980px) {
+  div.loginbox i {
+    display:none;
+  }
+}
+
 #wrap {
  min-height: 100%;
 }

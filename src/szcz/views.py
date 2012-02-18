@@ -18,3 +18,4 @@ class Context(object):
 def logged_in(context, request):
     return {'request': request,
             'main' :  get_renderer('templates/master.pt').implementation()}
+
