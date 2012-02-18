@@ -4,14 +4,12 @@
        metal:use-macro="main.macros['main']">
        <metal:container fill-slot="container">
 
-       <div class="hero-unit">
          <h2>Witaj w Szkole Czytania!</h2>
          <p>"Szkoła Czytania" ma pomóc w tworzeniu klas czytelniczych w dowolnym miejscu na świecie.
             Temu celowi będzie służyła społecznościowa aplikacja internetowa która umożliwi Wam tworzenie klas "Szkoły Czytania",
             wymianę komentarzy, wspólne czytanie książek oraz dostęp do unikatowych promocji czytelniczych.
           </p>
          <p><a class="btn btn-primary btn-large">Zobacz jak »</a></p>
-       </div>
 
 </metal:container>
 </html>    

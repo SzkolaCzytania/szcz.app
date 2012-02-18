@@ -19,6 +19,12 @@ class Context(object):
         self.request = request
 
 
+@view_config(context='pyramid.httpexceptions.HTTPNotFound', renderer='templates/notfound.pt')
+def notfound(request):
+    return {'request': request,
+            'main' :  get_renderer('templates/master.pt').implementation()}
+
+
 @view_config(route_name='home', renderer='templates/home.pt', permission='view')
 def home(context, request):
     return {'request': request,

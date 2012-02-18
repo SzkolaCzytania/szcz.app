@@ -50,27 +50,29 @@
         <div class="container-fluid" id="container-wrap">
 
           <div class="row-fluid">
-            <div class="span3" tal:condition="request.user">
-              <div class="well sidebar-nav">
-                <ul class="nav nav-list">
-                  <li class="nav-header">
-                    <i class="icon-home"></i>
-                    Grupy
-                  </li>
-                  <li><a href="#">Dodaj nową grupę</a></li>
-                  <li><a href="#">Moje grupy</a></li>
-                  <li><a href="#">Szukaj grupy</a></li>
-                </ul>
-                <ul class="nav nav-list">
-                  <li class="nav-header">
-                    <i class="icon-book"></i>
-                    Książki
-                  </li>
-                  <li><a href="#">Książki które czytam</a></li>
-                  <li><a href="/books">Wszystkie książki</a></li>
-                </ul>
+            <metal:sidebar define-slot="sidebar">
+              <div class="span3" tal:condition="request.user">
+                <div class="well sidebar-nav">
+                  <ul class="nav nav-list">
+                    <li class="nav-header">
+                      <i class="icon-home"></i>
+                      Grupy
+                    </li>
+                    <li><a href="#">Dodaj nową grupę</a></li>
+                    <li><a href="#">Moje grupy</a></li>
+                    <li><a href="#">Szukaj grupy</a></li>
+                  </ul>
+                  <ul class="nav nav-list">
+                    <li class="nav-header">
+                      <i class="icon-book"></i>
+                      Książki
+                    </li>
+                    <li><a href="#">Książki które czytam</a></li>
+                    <li><a href="/books">Wszystkie książki</a></li>
+                  </ul>
+                </div>
               </div>
-            </div>
+            </metal:sidebar>
             <div class="span9" tal:condition="request.user">
               <tal:flash repeat="msg request.session.pop_flash(queue='success')">
                 <div class="alert alert-block alert-success fade in">
