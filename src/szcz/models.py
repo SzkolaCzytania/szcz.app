@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Text, String, Integer, Boolean, ForeignKey, Table, DateTime
+from sqlalchemy import Column, Text, String, Integer, Boolean, ForeignKey, Table, DateTime, LargeBinary, Unicode
 from sqlalchemy.orm import relationship, backref, mapper
 from szcz import Base
 
@@ -18,9 +18,14 @@ class User(Base):
         return '%s %s' % (self.given_name, self.family_name)
 
 
-##################
-# CONTENT-MIRROR #
-##################
+class File(Base):
+    __tablename__ = 'related_files'
+    file_id = Column('id', Integer, primary_key=True)
+    data = Column(LargeBinary())
+    filename = Column(Unicode(100))
+    mimetype = Column(String(100))
+    size = Column(Integer())
+
 
 relations = Table("relations", Base.metadata,
                   Column("source_id", Integer, ForeignKey('content.content_id'), primary_key=True),
@@ -81,3 +86,26 @@ class Person(Content):
     content_id = Column(Integer, ForeignKey('content.content_id'), primary_key=True)
     biography = Column(Text)
     years = Column(Text)
+
+
+group_members = Table("group_members", Base.metadata,
+                      Column("group_id", Integer, ForeignKey('groups.id'), primary_key=True),
+                      Column("user_id", Integer, ForeignKey('users.email'), primary_key=True),
+                      Column("membership", String(128), primary_key=True))
+
+
+group_books = Table("group_books", Base.metadata,
+                      Column("group_id", Integer, ForeignKey('groups.id'), primary_key=True),
+                      Column("book_id", Integer, ForeignKey('book.content_id'), primary_key=True))
+
+
+class Group(Base):
+    __tablename__ = 'groups'
+    group_id = Column('id', Integer, primary_key=True)
+    name = Column(Text)
+    logo_id = Column(Integer, ForeignKey('related_files.id'))
+    logo = relationship(File, uselist=False)
+    address = Column(Text)
+    members = relationship(User, secondaryjoin=group_members)
+    books = relationship(Book, secondaryjoin=group_books)
+    end_date = Column(DateTime)
