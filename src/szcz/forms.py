@@ -5,6 +5,7 @@ from pyramid.view import view_config
 from pyramid.renderers import get_renderer
 from pyramid.httpexceptions import HTTPFound
 from fanstaticdeform import deform_req
+from szcz.models import Group
 
 
 def record_to_appstruct(self):
@@ -21,25 +22,21 @@ class UserSchema(colander.Schema):
 
     SEX = ((u'male',u'Mężczyzna'),(u'female',u'Kobieta'))
 
-    given_name = colander.SchemaNode(colander.String(),
-                                     title=u'Imię')
-    family_name = colander.SchemaNode(colander.String(),
-                                      title=u'Nazwisko')
+    given_name = colander.SchemaNode(colander.String(), title=u'Imię')
+    family_name = colander.SchemaNode(colander.String(), title=u'Nazwisko')
     address = colander.SchemaNode(colander.String(),
                                   widget=deform.widget.TextAreaWidget(rows=4, cols=60),
                                   title=u'Adres pocztowy')
-    age = colander.SchemaNode(colander.Integer(),
-                              title=u'Wiek')
+    age = colander.SchemaNode(colander.Integer(), title=u'Wiek')
     sex = colander.SchemaNode(colander.String(),
                               validator=colander.OneOf([x[0] for x in SEX]),
                               widget=deform.widget.RadioChoiceWidget(values=SEX),
                               title=u'Płeć')
-    terms = colander.SchemaNode(colander.Boolean(),
-                                title=u'Regulamin')
+    terms = colander.SchemaNode(colander.Boolean(), title=u'Regulamin')
 
 
 @view_config(route_name='userprofile', renderer='templates/userprofile.pt', permission='user_profile')
-def usercreate(context, request):
+def userprofile(context, request):
     deform_req.need()
 
     user = request.user
@@ -63,3 +60,26 @@ def usercreate(context, request):
     appstruct = record_to_appstruct(user)
     return {'form':form.render(appstruct=appstruct),
             'main':  get_renderer('templates/master.pt').implementation(),}
+
+
+class GroupSchema(colander.Schema):
+
+    name = colander.SchemaNode(colander.String(), title=u'Nazwa')
+#    logo = colander.SchemaNode(deform.FileData(),
+#                               widget=deform.widget.FileUploadWidget('/tmp'))
+    address = colander.SchemaNode(colander.String(), title=u'Adres')
+    zip_code = colander.SchemaNode(colander.String(), title=u'Kod pocztowy')
+    city = colander.SchemaNode(colander.String(), title=u'Miejscowość')
+    end_date = colander.SchemaNode(colander.Date(), title=u'Data ważności grupy')
+
+
+@view_config(route_name='add_group', renderer='templates/add_group.pt', permission='view')
+def add_group(context, request):
+    deform_req.need()
+    schema = GroupSchema()
+    form = deform.Form(schema, buttons=('submit','cancel'), css_class=u'form-horizontal')
+
+    appstruct = record_to_appstruct(Group())
+    return {'form':form.render(appstruct=appstruct),
+            'main':  get_renderer('templates/master.pt').implementation(),}
+

@@ -1,0 +1,12 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:tal="http://xml.zope.org/namespaces/tal"
+       xmlns:metal="http://xml.zope.org/namespaces/metal"
+       metal:use-macro="main.macros['main']">
+
+       <metal:container fill-slot="well">
+         <h3>Dodaj nową grupę</h3>
+         <br/>
+         <tal:form replace="structure form"/>
+      </metal:container>
+</html>
+

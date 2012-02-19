@@ -58,17 +58,17 @@
                       <i class="icon-home"></i>
                       Grupy
                     </li>
-                    <li><a href="#">Dodaj nową grupę</a></li>
-                    <li><a href="/groups">Moje grupy</a></li>
-                    <li><a href="#">Szukaj grupy</a></li>
+                    <li class="${request.matched_route.name == 'add_group' and 'active'}"><a href="/groups/+">Dodaj nową grupę</a></li>
+                    <li class="${request.matched_route.name == 'my_groups' and 'active'}"><a href="/groups/only_mine">Moje grupy</a></li>
+                    <li class="${request.matched_route.name == 'list_groups' and 'active'}"><a href="/groups">Wszystkie grupy</a></li>
                   </ul>
                   <ul class="nav nav-list">
                     <li class="nav-header">
                       <i class="icon-book"></i>
                       Książki
                     </li>
-                    <li><a href="#">Książki które czytam</a></li>
-                    <li><a href="/books">Wszystkie książki</a></li>
+                    <li class="${request.matched_route.name == 'my_books' and 'active'}"><a href="/books/only_mine">Książki które czytam</a></li>
+                    <li class="${request.matched_route.name == 'list_books' and 'active'}"><a href="/books">Wszystkie książki</a></li>
                   </ul>
                 </div>
               </div>

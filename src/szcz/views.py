@@ -5,7 +5,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from sqlalchemy.exc import SQLAlchemyError
 
 from szcz.resources import szcz, datatables
-from szcz.models import Book
+from szcz.models import Book, Group
 from szcz import DBSession
 
 
@@ -33,8 +33,8 @@ def home(context, request):
             'main' :  get_renderer('templates/master.pt').implementation()}
 
 
-@view_config(route_name='books', renderer='templates/list_books.pt', permission='view')
-def all_books(context, request):
+@view_config(route_name='list_books', renderer='templates/list_books.pt', permission='view')
+def list_books(context, request):
     datatables.need()
     books = DBSession().query(Book).order_by(Book.title)
     return {'request': request,
@@ -42,21 +42,55 @@ def all_books(context, request):
             'main' : get_renderer('templates/master.pt').implementation()}
 
 
-@view_config(route_name='book', renderer='templates/view_book.pt', permission='view')
+@view_config(route_name='my_books', renderer='templates/my_books.pt', permission='view')
+def my_books(context, request):
+    datatables.need()
+    groups = request.user.groups
+    return {'request': request,
+            'groups': groups,
+            'main' : get_renderer('templates/master.pt').implementation()}
+
+
+@view_config(route_name='view_book', renderer='templates/view_book.pt', permission='view')
 def view_book(context, request):
     try:
         book = DBSession().query(Book).get(request.matchdict.get('id'))
     except SQLAlchemyError:
+        raise HTTPNotFound
+    if not book:
         raise HTTPNotFound
     return {'request': request,
             'book': book,
             'main' : get_renderer('templates/master.pt').implementation()}
 
 
-@view_config(route_name='groups', renderer='templates/my_groups.pt', permission='view')
+@view_config(route_name='list_groups', renderer='templates/list_groups.pt', permission='view')
+def list_groups(context, request):
+    datatables.need()
+    groups = DBSession().query(Group).order_by(Group.name)
+    return {'request': request,
+            'groups': groups,
+            'main' : get_renderer('templates/master.pt').implementation()}
+
+
+@view_config(route_name='my_groups', renderer='templates/my_groups.pt', permission='view')
 def my_groups(context, request):
     #datatables.need()
     groups = request.user.groups
     return {'request': request,
             'groups': groups,
             'main' : get_renderer('templates/master.pt').implementation()}
+
+
+@view_config(route_name='view_group', renderer='templates/view_group.pt', permission='view')
+def view_group(context, request):
+    try:
+        group = DBSession().query(Group).get(request.matchdict.get('id'))
+    except SQLAlchemyError:
+        raise HTTPNotFound
+    if not group:
+        raise HTTPNotFound
+    return {'request': request,
+            'group': group,
+            'main' : get_renderer('templates/master.pt').implementation()}
+

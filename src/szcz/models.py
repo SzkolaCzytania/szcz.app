@@ -17,6 +17,11 @@ class User(Base):
     def fullname(self):
         return '%s %s' % (self.given_name, self.family_name)
 
+    def list_my_books(self):
+        for membership in self.groups:
+            for book in membership.group.books:
+                yield book
+
 
 class File(Base):
     __tablename__ = 'related_files'

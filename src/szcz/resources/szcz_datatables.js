@@ -3,7 +3,7 @@ $.extend( $.fn.dataTableExt.oStdClasses, {
 } );
 
 $(document).ready(function() {
-   $('#data_table').dataTable( {
+   $('.data_table').dataTable( {
       "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
       "sPaginationType": "bootstrap",
       "oLanguage": {"sProcessing":   "Proszę czekać...",

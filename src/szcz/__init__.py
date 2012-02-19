@@ -46,9 +46,15 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     config.add_route('logout', '/logout')
     config.add_route('userprofile', '/profile')
-    config.add_route('books', '/books')
-    config.add_route('book', '/book/{id}')
-    config.add_route('groups', '/groups')
+
+    config.add_route('view_book', '/books/{id:\d+}')
+    config.add_route('my_books', '/books/only_mine')
+    config.add_route('list_books', '/books')
+
+    config.add_route('my_groups', '/groups/only_mine')
+    config.add_route('list_groups', '/groups')
+    config.add_route('add_group', '/groups/+')
+    config.add_route('view_group', '/groups/{id:\d+}')
 
     config.add_static_view('deform_static', 'deform:static')
     config.scan()

@@ -1,0 +1,50 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:tal="http://xml.zope.org/namespaces/tal"
+       xmlns:metal="http://xml.zope.org/namespaces/metal"
+       metal:use-macro="main.macros['main']">
+
+  <metal:container fill-slot="well">
+    <h2> Książki które czytam </h2>
+
+    <div class="tabbable">
+      <ul class="nav nav-tabs">
+          <tal:groups repeat="group groups">
+             <li class="my-groups"><a href="#${repeat.group.number}" data-toggle="tab">${group.group.name}</a></li>
+          </tal:groups>
+        </ul>
+        <div class="tab-content">
+            <tal:groups repeat="group groups">
+                <div class="tab-pane active" id="${repeat.group.number}">
+                    <table class="data_table table table-striped table-bordered">
+                        <thead>
+                          <tr>
+                            <th class="yellow">Tytuł</th>
+                            <th class="blue">Autorzy</th>
+                            <th class="blue">Wydawca</th>
+                            <th class="green">ISBN</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr tal:repeat="book group.group.books">
+                            <td><a href="/books/${book.content_id}">${book.title}</a></td>
+                            <td>
+                                <tal:authors repeat="author book.authors()">
+                                  ${author.title}
+                                </tal:authors>
+                            </td>
+                            <td>${book.publisher}</td>
+                            <td>${book.isbn}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                  </div>
+            </tal:groups>
+        </div>
+    </div>
+
+    <script>
+        $('.my-groups a:first').tab('show')
+    </script>
+
+  </metal:container>
+</html>

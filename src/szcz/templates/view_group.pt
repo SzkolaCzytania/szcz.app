@@ -1,0 +1,48 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:tal="http://xml.zope.org/namespaces/tal"
+       xmlns:metal="http://xml.zope.org/namespaces/metal"
+       metal:use-macro="main.macros['main']">
+
+       <metal:container fill-slot="container">
+
+      <div class="well">
+          <ul class="nav nav-pills">
+              <li class="active"> <a href="#">Widok</a></li>
+              <li><a href="#">Edycja</a></li>
+              <li><a href="#">Dodatki</a></li>
+          </ul>
+
+          <h2>${group.name}</h2>
+
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <td>Adres:</td>
+                <td>${group.address}</td>
+              </tr>
+              <tr>
+                <td>Książki:</td>
+                <td>
+                    <tal:books repeat="book group.books">
+                        <a href="/books/${book.content_id}">${book.title}</a><tal:not_last condition="not repeat.book.end">,</tal:not_last>
+                    </tal:books>
+                </td>
+              </tr>
+              <tr>
+                <td>Członkowie:</td>
+                <td>
+                    <tal:books repeat="member group.members">
+                       ${member.user.fullname}<tal:not_last condition="not repeat.member.end">,</tal:not_last>
+                    </tal:books>
+                </td>
+              </tr>
+              <tr>
+                <td>Data końcowa:</td>
+                <td>${group.end_date}</td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+
+</metal:container>
+</html>    

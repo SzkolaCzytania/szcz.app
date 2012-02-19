@@ -4,27 +4,27 @@
        metal:use-macro="main.macros['main']">
 
   <metal:container fill-slot="well">
-    <h2> Moje grupy </h2>
+    <h2> Wszystkie grupy </h2>
 
     <table class="data_table table table-striped table-bordered">
         <thead>
           <tr>
-            <th class="yellow">Nazwa grupy</th>
+            <th class="yellow">Nazwa</th>
+            <th class="yellow">Adres</th>
             <th class="green">Książki</th>
-            <th class="blue">Rola</th>
           </tr>
         </thead>
         <tbody>
           <tr tal:repeat="group groups">
-            <td><a href="/groups/${group.group_id}">
-                ${group.group.name}
+            <td><a href="/groups/${group.id}">
+                ${group.name}
             </a></td>
+            <td>${group.address}</td>
             <td>
-                <tal:books repeat="book group.group.books">
+                <tal:books repeat="book group.books">
                   <a href="/books/${book.content_id}">${book.title}</a><tal:not_last condition="not repeat.book.end">,</tal:not_last>
                 </tal:books>
             </td>
-            <td>${group.membership}</td>
           </tr>
         </tbody>
       </table>
