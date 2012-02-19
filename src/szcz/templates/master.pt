@@ -59,7 +59,7 @@
                       Grupy
                     </li>
                     <li><a href="#">Dodaj nową grupę</a></li>
-                    <li><a href="#">Moje grupy</a></li>
+                    <li><a href="/groups">Moje grupy</a></li>
                     <li><a href="#">Szukaj grupy</a></li>
                   </ul>
                   <ul class="nav nav-list">

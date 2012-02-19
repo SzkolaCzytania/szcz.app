@@ -20,7 +20,7 @@ class User(Base):
 
 class File(Base):
     __tablename__ = 'related_files'
-    file_id = Column('id', Integer, primary_key=True)
+    id = Column('id', Integer, primary_key=True)
     data = Column(LargeBinary())
     filename = Column(Unicode(100))
     mimetype = Column(String(100))
@@ -79,7 +79,7 @@ class Book(Content):
         return [r.target for r in self.relations if r.relationship=='book_author']
 
 
-class Person(Content):
+class Author(Content):
     __tablename__ = 'person'
     __mapper_args__ = {'polymorphic_identity': 'PersonPeer',
                        'polymorphic_on': Content.object_type}
@@ -88,24 +88,39 @@ class Person(Content):
     years = Column(Text)
 
 
-group_members = Table("group_members", Base.metadata,
-                      Column("group_id", Integer, ForeignKey('groups.id'), primary_key=True),
-                      Column("user_id", Integer, ForeignKey('users.email'), primary_key=True),
-                      Column("membership", String(128), primary_key=True))
-
-
 group_books = Table("group_books", Base.metadata,
-                      Column("group_id", Integer, ForeignKey('groups.id'), primary_key=True),
-                      Column("book_id", Integer, ForeignKey('book.content_id'), primary_key=True))
+                    Column("group_id", Integer, ForeignKey('groups.id'), primary_key=True),
+                    Column("book_id", Integer, ForeignKey('book.content_id'), primary_key=True))
+
+
+class GroupMember(Base):
+    __tablename__ = "group_members"
+    group_id = Column(Integer, ForeignKey('groups.id'), primary_key=True)
+    user_id = Column(String, ForeignKey('users.email'), primary_key=True)
+    membership = Column(String(128))
+    user = relationship(User, uselist=False, backref='groups')
 
 
 class Group(Base):
     __tablename__ = 'groups'
-    group_id = Column('id', Integer, primary_key=True)
+    id = Column('id', Integer, primary_key=True)
     name = Column(Text)
     logo_id = Column(Integer, ForeignKey('related_files.id'))
     logo = relationship(File, uselist=False)
     address = Column(Text)
-    members = relationship(User, secondaryjoin=group_members)
-    books = relationship(Book, secondaryjoin=group_books)
+    members = relationship(GroupMember, backref='group')
+    books = relationship(Book, secondary=group_books)
     end_date = Column(DateTime)
+
+    def add_book(self, book):
+        if [b for b in self.books if b.content_id == book.content_id]:
+            return
+        self.books.append(book)
+
+    def add_member(self, user, membership):
+        if [u for u in self.members if u.user.email == user.email]:
+            return
+        group_membership = GroupMember(membership=membership)
+        group_membership.user = user
+        self.members.append(group_membership)
+

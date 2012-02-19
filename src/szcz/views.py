@@ -41,6 +41,7 @@ def all_books(context, request):
             'books': books,
             'main' : get_renderer('templates/master.pt').implementation()}
 
+
 @view_config(route_name='book', renderer='templates/view_book.pt', permission='view')
 def view_book(context, request):
     try:
@@ -49,4 +50,13 @@ def view_book(context, request):
         raise HTTPNotFound
     return {'request': request,
             'book': book,
+            'main' : get_renderer('templates/master.pt').implementation()}
+
+
+@view_config(route_name='groups', renderer='templates/my_groups.pt', permission='view')
+def my_groups(context, request):
+    #datatables.need()
+    groups = request.user.groups
+    return {'request': request,
+            'groups': groups,
             'main' : get_renderer('templates/master.pt').implementation()}

@@ -48,6 +48,7 @@ def main(global_config, **settings):
     config.add_route('userprofile', '/profile')
     config.add_route('books', '/books')
     config.add_route('book', '/book/{id}')
+    config.add_route('groups', '/groups')
 
     config.add_static_view('deform_static', 'deform:static')
     config.scan()
