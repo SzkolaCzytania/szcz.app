@@ -8,8 +8,7 @@ pyramid.debug_routematch = false
 pyramid.debug_templates = true
 pyramid.default_locale_name = en
 pyramid.includes = pyramid_debugtoolbar pyramid_tm
-sqlalchemy.apps.url = postgresql://postgres:postgres@localhost/szcz_apps
-sqlalchemy.mirror.url = postgresql://postgres:postgres@localhost/szcz_mirror
+sqlalchemy.url = postgresql://postgres:postgres@localhost/szcz
 
 session.type = file
 session.data_dir = %(here)s/data/sessions/data
@@ -22,7 +21,7 @@ fanstatic.bottom = true
 fanstatic.debug = true
 
 velruse.store = velruse.store.sqlstore.SQLStore
-velruse.store.url =  sqlite:///%(here)s/szcz.db
+velruse.store.url = postgresql://postgres:postgres@localhost/szcz
 velruse.openid.store = openid.store.memstore.MemoryStore
 velruse.openid.realm = ${conf:domain}
 velruse.facebook.app_id = ${conf:facebook_app_id}

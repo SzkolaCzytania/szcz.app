@@ -1,9 +1,8 @@
 import unittest
 import transaction
-
 from pyramid import testing
-
 from szcz import DBSession
+
 
 class TestMyView(unittest.TestCase):
     def setUp(self):

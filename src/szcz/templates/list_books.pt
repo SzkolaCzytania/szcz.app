@@ -10,7 +10,8 @@
           <tr>
             <th>#</th>
             <th class="yellow">Tytuł</th>
-            <th class="blue">Autor</th>
+            <th class="blue">Autorzy</th>
+            <th class="blue">Wydawca</th>
             <th class="green">ISBN</th>
           </tr>
         </thead>
@@ -18,6 +19,11 @@
           <tr tal:repeat="book books">
             <td tal:content="repeat.book.number"></td>
             <td><a href="/book/${book.content_id}">${book.title}</a></td>
+            <td>
+                <tal:authors repeat="author book.authors()">
+                  ${author.title}
+                </tal:authors>
+            </td>
             <td>${book.publisher}</td>
             <td>${book.isbn}</td>
           </tr>

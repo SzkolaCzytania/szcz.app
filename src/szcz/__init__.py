@@ -3,28 +3,23 @@ from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid_beaker import session_factory_from_settings
 from pkg_resources import resource_filename
-from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy import engine_from_config
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from zope.sqlalchemy import ZopeTransactionExtension
 from deform import Form
 
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
 
-MirrorDBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
-MirrorBase = declarative_base()
-
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
-    engine = engine_from_config(settings, 'sqlalchemy.apps.')
+    engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
-    mirror_engine = engine_from_config(settings, 'sqlalchemy.mirror.')
-    MirrorDBSession.configure(bind=mirror_engine)
-    MirrorBase.metadata.bind = mirror_engine
+    Base.metadata.bind = engine
 
     session_factory = session_factory_from_settings(settings)
     authentication_policy = SessionAuthenticationPolicy()

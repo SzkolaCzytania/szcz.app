@@ -4,8 +4,8 @@ from pyramid.renderers import get_renderer
 from pyramid.httpexceptions import HTTPNotFound
 from sqlalchemy.exc import SQLAlchemyError
 from szcz.resources import szcz
-from szcz.mirror import Book
-from szcz import MirrorDBSession
+from szcz.models import Book
+from szcz import DBSession
 
 
 class Context(object):
@@ -33,7 +33,7 @@ def home(context, request):
 
 @view_config(route_name='books', renderer='templates/list_books.pt', permission='view')
 def all_books(context, request):
-    books = MirrorDBSession().query(Book)
+    books = DBSession().query(Book)
     return {'request': request,
             'books': books,
             'main' : get_renderer('templates/master.pt').implementation()}
@@ -41,7 +41,7 @@ def all_books(context, request):
 @view_config(route_name='book', renderer='templates/view_book.pt', permission='view')
 def view_book(context, request):
     try:
-        book = MirrorDBSession().query(Book).get(request.matchdict.get('id'))
+        book = DBSession().query(Book).get(request.matchdict.get('id'))
     except SQLAlchemyError:
         raise HTTPNotFound
     return {'request': request,
