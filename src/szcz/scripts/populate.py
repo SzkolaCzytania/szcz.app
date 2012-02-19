@@ -46,3 +46,8 @@ def main(argv=sys.argv):
             group2.add_book(random.choice(all_books))
         group2.add_member(user, 'member')
         DBSession.add(group2)
+
+        group3 = models.Group(name=u'Grupa Lakoona')
+        for i in range(10):
+            group3.add_book(random.choice(all_books))
+        DBSession.add(group3)

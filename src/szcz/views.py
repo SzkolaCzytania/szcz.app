@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 from pyramid.security import Allow, Authenticated
 from pyramid.view import view_config
 from pyramid.renderers import get_renderer
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from sqlalchemy.exc import SQLAlchemyError
 
 from szcz.resources import szcz, datatables
@@ -94,3 +95,16 @@ def view_group(context, request):
             'group': group,
             'main' : get_renderer('templates/master.pt').implementation()}
 
+
+@view_config(route_name='join_group', permission='view')
+def join_group(context, request):
+    try:
+        group = DBSession().query(Group).get(request.matchdict.get('id'))
+    except SQLAlchemyError:
+        raise HTTPNotFound
+    if not group:
+        raise HTTPNotFound
+
+    group.add_member(request.user, 'member')
+    request.session.flash({'title':u'Gotowe!','body': u'Zostałeś członkiem grupy %s.' % group.name},queue='success')
+    return HTTPFound(location = '/groups/%s' % group.id)

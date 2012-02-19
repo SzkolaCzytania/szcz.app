@@ -53,6 +53,7 @@ def main(global_config, **settings):
 
     config.add_route('my_groups', '/groups/only_mine')
     config.add_route('list_groups', '/groups')
+    config.add_route('join_group', '/groups/{id:\d+}/join')
     config.add_route('add_group', '/groups/+')
     config.add_route('view_group', '/groups/{id:\d+}')
 

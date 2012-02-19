@@ -42,6 +42,8 @@
               </tr>
             </tbody>
           </table>
+
+          <a class="btn btn-success" href="/groups/${group.id}/join">Dołącz do grupy</a>
       </div>
 
 </metal:container>
