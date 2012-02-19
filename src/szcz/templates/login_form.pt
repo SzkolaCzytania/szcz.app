@@ -2,7 +2,8 @@
        xmlns:tal="http://xml.zope.org/namespaces/tal"
        xmlns:metal="http://xml.zope.org/namespaces/metal"
        metal:use-macro="main.macros['main']">
-       <metal:container fill-slot="container">
+
+       <div class="well" metal:fill-slot="container">
           <div class="modal loginbox">
               <div class="modal-header">
                   <h3>Zaloguj się w Szkole Czytania</h3>
@@ -49,6 +50,6 @@
               });
             </script>
        </div>
-    </metal:container>
+    </div>
 </html>
 

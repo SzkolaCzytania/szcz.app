@@ -2,14 +2,14 @@
        xmlns:tal="http://xml.zope.org/namespaces/tal"
        xmlns:metal="http://xml.zope.org/namespaces/metal"
        metal:use-macro="main.macros['main']">
-       <metal:container fill-slot="container">
 
+       <metal:container fill-slot="well">
          <h2>Witaj w Szkole Czytania!</h2>
          <p>"Szkoła Czytania" ma pomóc w tworzeniu klas czytelniczych w dowolnym miejscu na świecie.
             Temu celowi będzie służyła społecznościowa aplikacja internetowa która umożliwi Wam tworzenie klas "Szkoły Czytania",
             wymianę komentarzy, wspólne czytanie książek oraz dostęp do unikatowych promocji czytelniczych.
           </p>
          <p><a class="btn btn-primary btn-large">Zobacz jak »</a></p>
+      </metal:container>
 
-</metal:container>
-</html>    
+</html>

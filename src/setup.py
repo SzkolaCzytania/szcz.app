@@ -20,7 +20,8 @@ requires = [
     'pyramid_beaker',
     'deform_bootstrap',
     'deform',
-    'fanstaticdeform'
+    'fanstaticdeform',
+    'js.jquery_datatables',
     ]
 
 setup(name='szcz',

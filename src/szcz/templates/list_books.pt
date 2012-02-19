@@ -2,13 +2,12 @@
        xmlns:tal="http://xml.zope.org/namespaces/tal"
        xmlns:metal="http://xml.zope.org/namespaces/metal"
        metal:use-macro="main.macros['main']">
-       <metal:container fill-slot="container">
 
+  <metal:container fill-slot="well">
     <h2> Lista dostępnych książek </h2>
-    <table class="table table-striped">
+    <table id="data_table" class="table table-striped table-bordered">
         <thead>
           <tr>
-            <th>#</th>
             <th class="yellow">Tytuł</th>
             <th class="blue">Autorzy</th>
             <th class="blue">Wydawca</th>
@@ -17,7 +16,6 @@
         </thead>
         <tbody>
           <tr tal:repeat="book books">
-            <td tal:content="repeat.book.number"></td>
             <td><a href="/book/${book.content_id}">${book.title}</a></td>
             <td>
                 <tal:authors repeat="author book.authors()">
@@ -30,5 +28,5 @@
         </tbody>
       </table>
 
-</metal:container>
-</html>    
+  </metal:container>
+</html>

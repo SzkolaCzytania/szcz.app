@@ -7,16 +7,15 @@
         <div class="span2">
          &nbsp;
        </div>
-
        </metal:sidebar>
 
-       <metal:container fill-slot="container">
+       <div class="well" metal:fill-slot="container">
          <h2>Nie ma takiej strony!</h2>
          <p>"I zaczynam pytać się na nowo, co to może być ów nieznany stan,<br/>
          nie przynoszący żadnego logicznego wytłumaczenia,<br />
          ale przynoszący oczywistość szczęścia, realności, wobec której inne nikną"</p>
          <p><em>W poszukiwaniu straconego czasu.</em></p>
          <p><a href="/" class="btn btn-primary btn-large">Wróc na stronę główną »</a></p>
+       </div>
 
-</metal:container>
-</html>    
+</html>

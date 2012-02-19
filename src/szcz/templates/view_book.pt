@@ -2,31 +2,39 @@
        xmlns:tal="http://xml.zope.org/namespaces/tal"
        xmlns:metal="http://xml.zope.org/namespaces/metal"
        metal:use-macro="main.macros['main']">
+
        <metal:container fill-slot="container">
 
-       <h2>${book.title}</h2>
+      <div class="well">
+          <ul class="nav nav-pills">
+              <li class="active"> <a href="#">Książka</a></li>
+              <li><a href="#">Grupy czytające książkę</a></li>
+              <li><a href="#">Dodatki</a></li>
+          </ul>
 
-      <table class="table table-striped">
-        <tbody>
-          <tr>
-            <td>Tytuł:</td>
-            <td>${book.title}</td>
-          </tr>
-          <tr>
-            <td>Opis:</td>
-            <td>${book.description}</td>
-          </tr>
-          <tr>
-            <td>Wydawca:</td>
-            <td>${book.publisher}</td>
-          </tr>
-          <tr>
-            <td>ISBN:</td>
-            <td>${book.isbn}</td>
-          </tr>
-        </tbody>
-      </table>
+          <h2>${book.title}</h2>
 
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <td>Tytuł:</td>
+                <td>${book.title}</td>
+              </tr>
+              <tr>
+                <td>Opis:</td>
+                <td>${book.description}</td>
+              </tr>
+              <tr>
+                <td>Wydawca:</td>
+                <td>${book.publisher}</td>
+              </tr>
+              <tr>
+                <td>ISBN:</td>
+                <td>${book.isbn}</td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
 
 </metal:container>
 </html>    

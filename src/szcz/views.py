@@ -3,7 +3,8 @@ from pyramid.view import view_config
 from pyramid.renderers import get_renderer
 from pyramid.httpexceptions import HTTPNotFound
 from sqlalchemy.exc import SQLAlchemyError
-from szcz.resources import szcz
+
+from szcz.resources import szcz, datatables
 from szcz.models import Book
 from szcz import DBSession
 
@@ -21,6 +22,7 @@ class Context(object):
 
 @view_config(context='pyramid.httpexceptions.HTTPNotFound', renderer='templates/notfound.pt')
 def notfound(request):
+    request.response.status_int = 404
     return {'request': request,
             'main' :  get_renderer('templates/master.pt').implementation()}
 
@@ -33,7 +35,8 @@ def home(context, request):
 
 @view_config(route_name='books', renderer='templates/list_books.pt', permission='view')
 def all_books(context, request):
-    books = DBSession().query(Book)
+    datatables.need()
+    books = DBSession().query(Book).order_by(Book.title)
     return {'request': request,
             'books': books,
             'main' : get_renderer('templates/master.pt').implementation()}
