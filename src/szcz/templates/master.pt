@@ -92,6 +92,12 @@
                           Wszystkie książki
                         </a>
                     </li>
+                    <li class="${request.matched_route.name == 'list_canons' and 'active'}">
+                        <a href="/canons">
+                          <i class="icon-th-list"></i>
+                          Index Ksiąg Nakazanych
+                        </a>
+                    </li>
                   </ul>
                 </div>
               </div>

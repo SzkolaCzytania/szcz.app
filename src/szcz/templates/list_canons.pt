@@ -1,0 +1,28 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:tal="http://xml.zope.org/namespaces/tal"
+       xmlns:metal="http://xml.zope.org/namespaces/metal"
+       metal:use-macro="main.macros['main']">
+
+  <metal:container fill-slot="well">
+    <h2> Index Ksiąg Nakazanych </h2>
+
+        <div class="accordion" id="canons">
+         <tal:canons repeat="canon canons">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#canons" href="#collapse${repeat.canon.number}">
+                  ${canon.title}
+                </a>
+              </div>
+              <div id="collapse${repeat.canon.number}" class="accordion-body collapse ${repeat.canon.start and 'in'}">
+                <div class="accordion-inner">
+                    <img style="margin-right: 10px;" src="http://www.szkolaczytania.org.pl/${canon.authors()[0].path}/leadImage_mini" alt="${canon.title}" class="pull-left thumbnail">
+                    <div tal:content="structure canon.text" />
+                      <a href="/canons/${canon.content_id}" class="btn btn-primary">Książki w Kanonie</a>
+                </div>
+              </div>
+            </div>
+          </tal:canons>
+        </div>
+  </metal:container>
+</html>

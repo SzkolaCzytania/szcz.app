@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:tal="http://xml.zope.org/namespaces/tal"
+       xmlns:metal="http://xml.zope.org/namespaces/metal"
+       metal:use-macro="main.macros['main']">
+
+       <metal:container fill-slot="well">
+
+        <h2>${canon.title}</h2>
+        <img style="margin-right: 10px;" src="http://www.szkolaczytania.org.pl/${canon.authors()[0].path}/leadImage_mini" alt="${canon.title}" class="pull-left thumbnail">
+        <div tal:content="structure canon.text" />
+        <br clear="all" />
+        <div style="padding-top:10px">
+        <h3>Książki w kanonie</h3>
+          <table class="data_table table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th class="yellow">Tytuł</th>
+                  <th class="blue">Autorzy</th>
+                  <th class="blue">Wydawca</th>
+                  <th class="green">ISBN</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr tal:repeat="book canon.books()">
+                  <td><a href="/books/${book.content_id}">${book.title}</a></td>
+                  <td>
+                      <tal:authors repeat="author book.authors()">
+                        ${author.title}
+                      </tal:authors>
+                  </td>
+                  <td>${book.publisher}</td>
+                  <td>${book.isbn}</td>
+                </tr>
+              </tbody>
+            </table>
+</div>
+</metal:container>
+</html>    

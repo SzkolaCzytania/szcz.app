@@ -62,7 +62,7 @@ class Content(Base):
     modification_date = Column(DateTime)
     relations = relationship(Relation,
                              primaryjoin=('content.c.content_id==relations.c.source_id'),
-                             backref=backref("source",remote_side=[relations.c.source_id]))
+                             backref=backref("source", remote_side=[relations.c.source_id]))
     __mapper_args__ = {'polymorphic_identity': 'content', 'polymorphic_on': object_type}
 
 mapper(Relation, relations, 
@@ -82,6 +82,21 @@ class Book(Content):
 
     def authors(self):
         return [r.target for r in self.relations if r.relationship=='book_author']
+
+
+class Canon(Content):
+    __tablename__ = 'canon'
+    __mapper_args__ = {'polymorphic_identity': 'CanonPeer',
+                       'polymorphic_on': Content.object_type}
+    content_id = Column(Integer, ForeignKey('content.content_id'), primary_key=True)
+    text = Column(Text)
+
+    def books(self):
+        books = [r.target for r in self.relations if r.relationship=='canon_book']
+        return sorted(books, key=lambda book: book.title)
+
+    def authors(self):
+        return [r.target for r in self.relations if r.relationship=='canon_author']
 
 
 class Author(Content):

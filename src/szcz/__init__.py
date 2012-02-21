@@ -51,6 +51,9 @@ def main(global_config, **settings):
     config.add_route('my_books', '/books/only_mine')
     config.add_route('list_books', '/books')
 
+    config.add_route('list_canons', '/canons')
+    config.add_route('view_canon', '/canons/{id:\d+}')
+
     config.add_route('my_groups', '/groups/only_mine')
     config.add_route('list_groups', '/groups')
     config.add_route('join_group', '/groups/{id:\d+}/join')

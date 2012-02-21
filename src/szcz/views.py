@@ -6,7 +6,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from sqlalchemy.exc import SQLAlchemyError
 
 from szcz.resources import szcz, datatables
-from szcz.models import Book, Group
+from szcz.models import Book, Group, Canon
 from szcz import DBSession
 
 
@@ -32,6 +32,29 @@ def notfound(request):
 def home(context, request):
     return {'request': request,
             'main' :  get_renderer('templates/master.pt').implementation()}
+
+
+@view_config(route_name='list_canons', renderer='templates/list_canons.pt', permission='view')
+def list_canons(context, request):
+    datatables.need()
+    canons = DBSession().query(Canon).order_by(Canon.title)
+    return {'request': request,
+            'canons': canons,
+            'main' : get_renderer('templates/master.pt').implementation()}
+
+
+@view_config(route_name='view_canon', renderer='templates/view_canon.pt', permission='view')
+def view_canon(context, request):
+    datatables.need()
+    try:
+        canon = DBSession().query(Canon).get(request.matchdict.get('id'))
+    except SQLAlchemyError:
+        raise HTTPNotFound
+    if not canon:
+        raise HTTPNotFound
+    return {'request': request,
+            'canon': canon,
+            'main' : get_renderer('templates/master.pt').implementation()}
 
 
 @view_config(route_name='list_books', renderer='templates/list_books.pt', permission='view')
@@ -76,7 +99,6 @@ def list_groups(context, request):
 
 @view_config(route_name='my_groups', renderer='templates/my_groups.pt', permission='view')
 def my_groups(context, request):
-    #datatables.need()
     groups = request.user.groups
     return {'request': request,
             'groups': groups,
