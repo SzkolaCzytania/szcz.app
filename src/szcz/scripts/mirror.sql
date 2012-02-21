@@ -138,6 +138,23 @@ CREATE TABLE relations (
 ALTER TABLE public.relations OWNER TO postgres;
 
 --
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE users (
+    email character varying NOT NULL,
+    given_name text,
+    family_name text,
+    address text,
+    age integer,
+    sex character varying,
+    terms boolean
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
 -- Data for Name: book; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -515,6 +532,15 @@ COPY relations (source_id, target_id, relationship) FROM stdin;
 
 
 --
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY users (email, given_name, family_name, address, age, sex, terms) FROM stdin;
+andrew@mleczko.net	Andrew	Mleczko	test	12	female	t
+\.
+
+
+--
 -- Name: book_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -552,6 +578,14 @@ ALTER TABLE ONLY person
 
 ALTER TABLE ONLY relations
     ADD CONSTRAINT relations_pkey PRIMARY KEY (source_id, target_id, relationship);
+
+
+--
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (email);
 
 
 --
