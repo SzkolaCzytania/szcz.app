@@ -3,6 +3,7 @@ from pyramid.security import Allow, Authenticated
 from pyramid.view import view_config
 from pyramid.renderers import get_renderer
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
+from pyramid.response import Response
 from sqlalchemy.exc import SQLAlchemyError
 
 from szcz.resources import szcz, datatables
@@ -116,6 +117,22 @@ def view_group(context, request):
     return {'request': request,
             'group': group,
             'main' : get_renderer('templates/master.pt').implementation()}
+
+
+@view_config(route_name='logo_group', permission='view')
+def logo_group(context, request):
+    try:
+        group = DBSession().query(Group).get(request.matchdict.get('id'))
+    except SQLAlchemyError:
+        raise HTTPNotFound
+    if not group:
+        raise HTTPNotFound
+    logo = group.logo 
+    return Response(headerlist=[('Content-Disposition', '%s;filename="%s"' % (
+                                    'inline', logo.filename.encode('ascii', 'ignore'))),
+                                ('Content-Length', str(logo.size)),
+                                ('Content-Type', str(logo.mimetype)),],
+                    app_iter=logo.data,)
 
 
 @view_config(route_name='join_group', permission='view')

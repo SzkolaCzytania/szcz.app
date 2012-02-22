@@ -13,6 +13,12 @@
          <h3>Profil użytkownika ${request.user.email}</h3>
          <br/>
          <tal:form replace="structure form"/>
-      </metal:container>
+            <script type="text/javascript">
+                  jQuery(function() {
+                        deform.load();
+                  });
+            </script>
+         </metal:container>
+
 </html>
 

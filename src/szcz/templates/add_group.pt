@@ -7,6 +7,11 @@
          <h3>Dodaj nową grupę</h3>
          <br/>
          <tal:form replace="structure form"/>
+        <script type="text/javascript">
+              jQuery(function() {
+                    deform.load();
+              });
+        </script>
       </metal:container>
 </html>
 

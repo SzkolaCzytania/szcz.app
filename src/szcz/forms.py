@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 import deform
 import colander
+from cStringIO import StringIO
 from pyramid.view import view_config
 from pyramid.renderers import get_renderer
 from pyramid.httpexceptions import HTTPFound
-from fanstaticdeform import deform_req
-from szcz.models import Group
+from fanstaticdeform import deform_resource
+#from pyramid.url import resource_url
+#from pyramid.traversal import find_root
+from szcz.models import Group, File
+from szcz import DBSession
 
 
 def record_to_appstruct(self):
@@ -16,6 +20,56 @@ def merge_session_with_post(session, post):
     for key,value in post.items():
         setattr(session, key, value)
     return session
+
+
+class FileUploadTempStore(object):
+
+    def __init__(self, request):
+        self.request = request
+        self.session = request.session
+
+    def __setitem__(self, name, value):
+        pickleable = value.copy()
+        fp = pickleable.get('fp', None)
+        if fp is not None:
+            pickleable['fp'] = fp.read()
+        return self.session.__setitem__(name, pickleable)
+
+    def __getitem__(self, name):
+        if name in self.session:
+            sessiondata = self.session['name']
+            filedata = {}
+            for (key, value) in sessiondata:
+                if ((key == 'fp') and (value is not None)):
+                    # translate the file data back into a file
+                    # like object
+                    value = StringIO(value)
+                    filedata[key] = value
+            return filedata
+        raise KeyError('"%s" not in session' % name)
+
+    def __delitem__(self, name):
+        del self.session[name]
+
+    def __contains__(self, name):
+        return (name in self.session)
+
+    def get(self, name, default=None):
+        try:
+            self.__getitem__(name)
+        except:
+            return default
+
+    def preview_url(self, name):
+        return None
+#        return resource_url(find_root(self.request.context),
+#                            self.request, 'upload', name)
+
+
+@colander.deferred
+def deferred_fileupload_widget(node, kw):
+    tmpstore = FileUploadTempStore(kw['request'])
+    return deform.widget.FileUploadWidget(tmpstore)
 
 
 class UserSchema(colander.Schema):
@@ -37,14 +91,16 @@ class UserSchema(colander.Schema):
 
 @view_config(route_name='userprofile', renderer='templates/userprofile.pt', permission='user_profile')
 def userprofile(context, request):
-    deform_req.need()
-
     user = request.user
     schema = UserSchema()
-    form = deform.Form(schema, buttons=('submit','cancel'), css_class=u'form-horizontal')
+    form = deform.Form(schema, buttons=('zapisz','anuluj'), css_class=u'form-horizontal')
+    deform_resource.needsFor(form)
     form['terms'].widget.template = 'szcz_terms'
 
     if request.POST:
+        if not 'zapisz' in request.POST:
+            return HTTPFound(location = '/')
+
         items = request.POST.items()
         try:
             appstruct = form.validate(items)
@@ -63,10 +119,10 @@ def userprofile(context, request):
 
 
 class GroupSchema(colander.Schema):
-
     name = colander.SchemaNode(colander.String(), title=u'Nazwa')
-#    logo = colander.SchemaNode(deform.FileData(),
-#                               widget=deform.widget.FileUploadWidget('/tmp'))
+    logo = colander.SchemaNode(deform.FileData(),
+                               missing = colander.null,
+                               widget=deferred_fileupload_widget)
     address = colander.SchemaNode(colander.String(), title=u'Adres')
     zip_code = colander.SchemaNode(colander.String(), title=u'Kod pocztowy')
     city = colander.SchemaNode(colander.String(), title=u'Miejscowość')
@@ -75,9 +131,34 @@ class GroupSchema(colander.Schema):
 
 @view_config(route_name='add_group', renderer='templates/add_group.pt', permission='view')
 def add_group(context, request):
-    deform_req.need()
-    schema = GroupSchema()
-    form = deform.Form(schema, buttons=('submit','cancel'), css_class=u'form-horizontal')
+    schema = GroupSchema().bind(request=request)
+    form = deform.Form(schema, buttons=('zapisz','anuluj'), css_class=u'form-horizontal')
+    deform_resource.needsFor(form)
+
+    if request.POST:
+        if not 'zapisz' in request.POST:
+            return HTTPFound(location = '/')
+        items = request.POST.items()
+        try:
+            appstruct = form.validate(items)
+        except deform.ValidationFailure, e:
+            request.session.flash({'title':u'Błędy','body': u'Popraw zaznaczone błędy'},queue='error')
+            return {'form': e.render(),
+                    'main':  get_renderer('templates/master.pt').implementation(),}
+
+        logo = merge_session_with_post(File(),appstruct.pop('logo'))
+        logo.fp.seek(0)
+        data = logo.fp.read()
+        logo.data = data
+        logo.size = len(data)
+        group = merge_session_with_post(Group(), appstruct)
+        group.logo = logo
+        group.add_member(request.user, 'owner')
+        session = DBSession()
+        session.add(group)
+        request.session.flash({'title':u'Gotowe!','body': u'Grupa %s została stworzona.' % group.name},queue='success')
+        return HTTPFound(location = '/groups/only_mine')
+
 
     appstruct = record_to_appstruct(Group())
     return {'form':form.render(appstruct=appstruct),

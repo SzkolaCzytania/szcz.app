@@ -12,6 +12,7 @@
               <li><a href="#">Dodatki</a></li>
           </ul>
 
+          <img src="/groups/${group.id}/logo_view"/>
           <h2>${group.name}</h2>
 
           <table class="table table-striped">
