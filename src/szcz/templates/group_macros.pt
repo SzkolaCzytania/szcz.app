@@ -1,0 +1,25 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:tal="http://xml.zope.org/namespaces/tal"
+       xmlns:metal="http://xml.zope.org/namespaces/metal">
+
+    <metal:nav define-macro="nav">
+
+          <ul class="nav nav-pills">
+            <li class="active"> <a href="/groups/${group.id}">Widok</a></li>
+            <li><a href="/groups/${group.id}/edit">Edycja</a></li>
+              <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                      <span class="${group.state_css}">status ${group.state}</span>
+                      <b class="caret" tal:condition="group.get_states(request)"></b>
+                  </a>
+                  <ul class="dropdown-menu" tal:condition="group.get_states(request)">
+                    <tal:states repeat="state group.get_states(request)">
+                        <li><a href="/groups/${group.id}/change_state?destination=${state.to_state}">${state.name}</a></li>
+                    </tal:states>
+                  </ul>
+              </li>
+          </ul>
+
+    </metal:nav>
+
+</html>

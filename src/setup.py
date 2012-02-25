@@ -8,6 +8,7 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
     'pyramid',
+    'pyramid_zcml',
     'SQLAlchemy',
     'psycopg2',
     'transaction',
@@ -24,6 +25,7 @@ requires = [
     'deform',
     'fanstaticdeform',
     'js.jquery_datatables',
+    'repoze.workflow',
     ]
 
 setup(name='szcz',

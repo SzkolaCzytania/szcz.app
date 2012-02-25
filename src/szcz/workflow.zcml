@@ -1,0 +1,33 @@
+<configure xmlns="http://namespaces.repoze.org/bfg">
+<include package="repoze.workflow" file="meta.zcml"/>
+
+<!-- Group workflow -->
+
+<workflow
+   type="GroupWorkflow"
+   name="Group workflow"
+   state_attr="state"
+   content_types="szcz.interfaces.IGroup"
+   permission_checker="pyramid.security.has_permission"
+   initial_state="nieaktywna">
+
+   <state name="nieaktywna"></state>
+   <state name="w trakcie aktywacji"></state>
+   <state name="aktywna"></state>
+   <state name="zablokowana"></state>
+
+   <transition
+      name="aktywacja"
+      from_state="nieaktywna"
+      permission="edit"
+      to_state="w trakcie aktywacji" />
+
+   <transition
+      name="blokada"
+      from_state="aktywna"
+      permission="manage"
+      to_state="zablokowana" />
+
+</workflow>
+
+</configure>

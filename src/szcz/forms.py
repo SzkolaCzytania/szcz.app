@@ -5,9 +5,9 @@ from cStringIO import StringIO
 from pyramid.view import view_config
 from pyramid.renderers import get_renderer
 from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPNotFound
 from fanstaticdeform import deform_resource
-#from pyramid.url import resource_url
-#from pyramid.traversal import find_root
+from sqlalchemy.exc import SQLAlchemyError
 from szcz.models import Group, File
 from szcz import DBSession
 
@@ -17,6 +17,8 @@ def record_to_appstruct(self):
 
 
 def merge_session_with_post(session, post):
+    if not isinstance(post, dict):
+        return None
     for key,value in post.items():
         setattr(session, key, value)
     return session
@@ -129,11 +131,22 @@ class GroupSchema(colander.Schema):
     end_date = colander.SchemaNode(colander.Date(), title=u'Data ważności grupy')
 
 
+@view_config(route_name='edit_group', renderer='templates/edit_group.pt', permission='edit')
 @view_config(route_name='add_group', renderer='templates/add_group.pt', permission='view')
 def add_group(context, request):
     schema = GroupSchema().bind(request=request)
     form = deform.Form(schema, buttons=('zapisz','anuluj'), css_class=u'form-horizontal')
     deform_resource.needsFor(form)
+
+    if request.matchdict.has_key('id'):
+        try:
+            group = DBSession().query(Group).get(request.matchdict.get('id'))
+        except SQLAlchemyError:
+            raise HTTPNotFound
+        if not group:
+            raise HTTPNotFound
+    else:
+        group = Group()
 
     if request.POST:
         if not 'zapisz' in request.POST:
@@ -144,15 +157,19 @@ def add_group(context, request):
         except deform.ValidationFailure, e:
             request.session.flash({'title':u'Błędy','body': u'Popraw zaznaczone błędy'},queue='error')
             return {'form': e.render(),
+                    'group_nav':  get_renderer('templates/group_macros.pt').implementation(),
+                    'group': group,
                     'main':  get_renderer('templates/master.pt').implementation(),}
 
         logo = merge_session_with_post(File(),appstruct.pop('logo'))
-        logo.fp.seek(0)
-        data = logo.fp.read()
-        logo.data = data
-        logo.size = len(data)
-        group = merge_session_with_post(Group(), appstruct)
-        group.logo = logo
+        if logo:
+            logo.fp.seek(0)
+            data = logo.fp.read()
+            logo.data = data
+            logo.size = len(data)
+        group = merge_session_with_post(group, appstruct)
+        if logo:
+            group.logo = logo
         group.add_member(request.user, 'owner')
         session = DBSession()
         session.add(group)
@@ -160,7 +177,9 @@ def add_group(context, request):
         return HTTPFound(location = '/groups/only_mine')
 
 
-    appstruct = record_to_appstruct(Group())
+    appstruct = record_to_appstruct(group)
     return {'form':form.render(appstruct=appstruct),
+            'group': group,
+            'group_nav':  get_renderer('templates/group_macros.pt').implementation(),
             'main':  get_renderer('templates/master.pt').implementation(),}
 

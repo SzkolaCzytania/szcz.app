@@ -1,0 +1,24 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:tal="http://xml.zope.org/namespaces/tal"
+       xmlns:metal="http://xml.zope.org/namespaces/metal"
+       metal:use-macro="main.macros['main']">
+
+     <metal:container fill-slot="container">
+
+      <div class="well">
+
+          <metal:group_nav use-macro="group_nav.macros['nav']" />
+
+          <h2>Edycja grupy ${group.name}</h2>
+
+         <tal:form replace="structure form"/>
+        <script type="text/javascript">
+              jQuery(function() {
+                    deform.load();
+              });
+        </script>
+
+      </div>
+
+</metal:container>
+</html>

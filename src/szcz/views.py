@@ -1,25 +1,13 @@
 # -*- coding: utf-8 -*-
-from pyramid.security import Allow, Authenticated
 from pyramid.view import view_config
 from pyramid.renderers import get_renderer
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.response import Response
 from sqlalchemy.exc import SQLAlchemyError
-
-from szcz.resources import szcz, datatables
+from repoze.workflow import WorkflowError
 from szcz.models import Book, Group, Canon
 from szcz import DBSession
-
-
-class Context(object):
-    """  Default context factory. """
-
-    __acl__ = [(Allow, Authenticated, 'view'),
-               (Allow, Authenticated, 'user_profile'),]
-
-    def __init__(self, request):
-        szcz.need()
-        self.request = request
+from szcz.resources import datatables
 
 
 @view_config(context='pyramid.httpexceptions.HTTPNotFound', renderer='templates/notfound.pt')
@@ -116,6 +104,7 @@ def view_group(context, request):
         raise HTTPNotFound
     return {'request': request,
             'group': group,
+            'group_nav' : get_renderer('templates/group_macros.pt').implementation(),
             'main' : get_renderer('templates/master.pt').implementation()}
 
 
@@ -128,11 +117,29 @@ def logo_group(context, request):
     if not group:
         raise HTTPNotFound
     logo = group.logo 
+    if not logo:
+        raise HTTPNotFound
     return Response(headerlist=[('Content-Disposition', '%s;filename="%s"' % (
-                                    'inline', logo.filename.encode('ascii', 'ignore'))),
+                                 'inline', logo.filename.encode('ascii', 'ignore'))),
                                 ('Content-Length', str(logo.size)),
                                 ('Content-Type', str(logo.mimetype)),],
                     app_iter=logo.data,)
+
+
+@view_config(route_name='wf_group', permission='edit', request_param='destination')
+def change_group_state(context, request):
+    try:
+        group = DBSession().query(Group).get(request.matchdict.get('id'))
+    except SQLAlchemyError:
+        raise HTTPNotFound
+    if not group:
+        raise HTTPNotFound
+    try:
+        group.wf.transition_to_state(group, request, request.params.get('destination'), skip_same=False)
+    except WorkflowError:
+        request.session.flash({'title':u'Błąd!','body': u'Nie udało się zmienić statusu.'},queue='danger')
+    request.session.flash({'title':u'Gotowe!','body': u'Status grupy został uaktualniony.'},queue='success')
+    return HTTPFound(location = '/groups/%s' % group.id)
 
 
 @view_config(route_name='join_group', permission='view')

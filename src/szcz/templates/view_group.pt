@@ -3,17 +3,13 @@
        xmlns:metal="http://xml.zope.org/namespaces/metal"
        metal:use-macro="main.macros['main']">
 
-       <metal:container fill-slot="container">
+     <metal:container fill-slot="container">
 
       <div class="well">
-          <ul class="nav nav-pills">
-              <li class="active"> <a href="#">Widok</a></li>
-              <li><a href="#">Edycja</a></li>
-              <li><a href="#">Dodatki</a></li>
-          </ul>
 
-          <a class="lightbox" href="/groups/${group.id}/logo_view"><img src="/groups/${group.id}/logo_view" height="100"/></a>
+          <metal:group_nav use-macro="group_nav.macros['nav']" />
 
+          <a tal:condition="group.logo" class="lightbox" href="/groups/${group.id}/logo_view"><img src="/groups/${group.id}/logo_view" height="100"/></a>
           <h2>${group.name}</h2>
 
           <table class="table table-striped">
@@ -49,4 +45,4 @@
       </div>
 
 </metal:container>
-</html>    
+</html>

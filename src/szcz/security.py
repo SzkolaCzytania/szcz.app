@@ -7,6 +7,11 @@ from szcz.models import User
 from szcz import DBSession
 
 
+def groupfinder(userid, request):
+    if userid == u'andrew@mleczko.net':
+        return ['group:administrator']
+
+
 def get_user(request):
     userid = unauthenticated_userid(request)
     if userid is not None:

@@ -16,7 +16,8 @@
         </thead>
         <tbody>
           <tr tal:repeat="group groups">
-            <td><a href="/groups/${group.id}">
+            <td>
+              <a href="/groups/${group.id}">
                 ${group.name}
             </a></td>
             <td>${group.address}</td>

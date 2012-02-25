@@ -3,6 +3,13 @@
        xmlns:metal="http://xml.zope.org/namespaces/metal"
        metal:use-macro="main.macros['main']">
 
+
+       <metal:sidebar fill-slot="sidebar">
+        <div class="span2">
+         &nbsp;
+       </div>
+       </metal:sidebar>
+
        <div metal:fill-slot="container">
           <div class="modal loginbox">
               <div class="modal-header">

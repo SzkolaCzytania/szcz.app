@@ -22,7 +22,8 @@ def main(global_config, **settings):
     Base.metadata.bind = engine
 
     session_factory = session_factory_from_settings(settings)
-    authentication_policy = SessionAuthenticationPolicy()
+    from szcz.security import groupfinder
+    authentication_policy = SessionAuthenticationPolicy(callback=groupfinder)
     authorization_policy = ACLAuthorizationPolicy()
 
     config = Configurator(settings=settings)
@@ -58,11 +59,17 @@ def main(global_config, **settings):
     config.add_route('list_groups', '/groups')
     config.add_route('join_group', '/groups/{id:\d+}/join')
     config.add_route('logo_group', '/groups/{id:\d+}/logo_view')
+    config.add_route('wf_group', '/groups/{id:\d+}/change_state')
     config.add_route('add_group', '/groups/+')
     config.add_route('view_group', '/groups/{id:\d+}')
+    config.add_route('edit_group', '/groups/{id:\d+}/edit')
 
     config.add_static_view('deform_static', 'deform:static')
     config.scan()
-    config.set_root_factory('szcz.views.Context')
+    config.set_root_factory('szcz.models.Context')
     config.set_session_factory(session_factory)
+
+    config.include('pyramid_zcml')
+    config.load_zcml('workflow.zcml')
+
     return config.make_wsgi_app()
