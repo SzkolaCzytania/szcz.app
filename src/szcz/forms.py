@@ -8,7 +8,8 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from fanstaticdeform import deform_resource
 from sqlalchemy.exc import SQLAlchemyError
-from szcz.models import Group, File
+from repoze.workflow import WorkflowError
+from szcz.models import Group#, File
 from szcz import DBSession
 
 
@@ -64,8 +65,6 @@ class FileUploadTempStore(object):
 
     def preview_url(self, name):
         return None
-#        return resource_url(find_root(self.request.context),
-#                            self.request, 'upload', name)
 
 
 @colander.deferred
@@ -120,37 +119,59 @@ def userprofile(context, request):
             'main':  get_renderer('templates/master.pt').implementation(),}
 
 
+@colander.deferred
+def deferred_activation_validator(node, kw):
+    """BBB: to be finished """
+    return colander.OneOf(['123456789','abcdefghijk'])
+
+
 class GroupSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(), title=u'Nazwa')
-    logo = colander.SchemaNode(deform.FileData(),
-                               missing = colander.null,
-                               widget=deferred_fileupload_widget)
+#    logo = colander.SchemaNode(deform.FileData(),
+#                               missing = colander.null,
+#                               widget=deferred_fileupload_widget)
     address = colander.SchemaNode(colander.String(), title=u'Adres')
     zip_code = colander.SchemaNode(colander.String(), title=u'Kod pocztowy')
     city = colander.SchemaNode(colander.String(), title=u'Miejscowość')
     end_date = colander.SchemaNode(colander.Date(), title=u'Data ważności grupy')
+    activation_code = colander.SchemaNode(colander.String(), missing=colander.null,
+                                          validator=deferred_activation_validator,
+                                          title=u'Kod aktywacyjny')
+
+
+def maybe_remove_fields(node, kw):
+    if kw['group'].state != u'w trakcie aktywacji':
+        del node['activation_code']
+    if kw['group'].state == u'w trakcie aktywacji':
+        del node['address']
+        del node['zip_code']
+        del node['city']
+        del node['end_date']
 
 
 @view_config(route_name='edit_group', renderer='templates/edit_group.pt', permission='edit')
 @view_config(route_name='add_group', renderer='templates/add_group.pt', permission='view')
 def add_group(context, request):
-    schema = GroupSchema().bind(request=request)
-    form = deform.Form(schema, buttons=('zapisz','anuluj'), css_class=u'form-horizontal')
-    deform_resource.needsFor(form)
 
     if request.matchdict.has_key('id'):
         try:
             group = DBSession().query(Group).get(request.matchdict.get('id'))
+            is_new = False
         except SQLAlchemyError:
             raise HTTPNotFound
         if not group:
             raise HTTPNotFound
     else:
         group = Group()
+        is_new = True
+
+    schema = GroupSchema(after_bind=maybe_remove_fields).bind(request=request, group=group)
+    form = deform.Form(schema, buttons=('zapisz','anuluj'), css_class=u'form-horizontal')
+    deform_resource.needsFor(form)
 
     if request.POST:
         if not 'zapisz' in request.POST:
-            return HTTPFound(location = '/')
+            return HTTPFound(location = '/groups/only_mine')
         items = request.POST.items()
         try:
             appstruct = form.validate(items)
@@ -161,19 +182,26 @@ def add_group(context, request):
                     'group': group,
                     'main':  get_renderer('templates/master.pt').implementation(),}
 
-        logo = merge_session_with_post(File(),appstruct.pop('logo'))
-        if logo:
-            logo.fp.seek(0)
-            data = logo.fp.read()
-            logo.data = data
-            logo.size = len(data)
+#        logo = merge_session_with_post(File(),appstruct.pop('logo'))
+#        if logo:
+#            logo.fp.seek(0)
+#            data = logo.fp.read()
+#            logo.data = data
+#            logo.size = len(data)
+
+        if 'activation_code' in request.POST:
+            group.state = u'aktywna'
+            request.session.flash({'title':u'Gotowe!','body': u'Grupa %s została aktywowana.' % group.name},queue='success')
+            return HTTPFound(location = '/groups/%s' % group.id)
+
         group = merge_session_with_post(group, appstruct)
-        if logo:
-            group.logo = logo
         group.add_member(request.user, 'owner')
         session = DBSession()
         session.add(group)
-        request.session.flash({'title':u'Gotowe!','body': u'Grupa %s została stworzona.' % group.name},queue='success')
+        if is_new:
+            request.session.flash({'title':u'Gotowe!','body': u'Grupa %s została stworzona.' % group.name},queue='success')
+        else:
+            request.session.flash({'title':u'Gotowe!','body': u'Grupa %s została zaktualizowana.' % group.name},queue='success')
         return HTTPFound(location = '/groups/only_mine')
 
 

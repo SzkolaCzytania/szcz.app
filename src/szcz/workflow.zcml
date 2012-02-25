@@ -14,13 +14,35 @@
    <state name="nieaktywna"></state>
    <state name="w trakcie aktywacji"></state>
    <state name="aktywna"></state>
+   <state name="w edycji"></state>
+   <state name="do akceptacji"></state>
    <state name="zablokowana"></state>
 
    <transition
       name="aktywacja"
       from_state="nieaktywna"
       permission="edit"
+      callback="szcz.groups.send_activation"
       to_state="w trakcie aktywacji" />
+
+   <transition
+      name="wycofaj do edycji"
+      from_state="aktywna"
+      permission="review"
+      to_state="w edycji" />
+
+   <transition
+      name="wyślij do akceptacji"
+      from_state="w edycji"
+      permission="edit"
+      callback="szcz.groups.send_aceptation"
+      to_state="do akceptacji" />
+
+   <transition
+      name="zaakceptuj"
+      from_state="do akceptacji"
+      permission="manage"
+      to_state="aktywna" />
 
    <transition
       name="blokada"

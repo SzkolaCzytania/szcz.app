@@ -1,25 +1,8 @@
 from sqlalchemy import Column, Text, String, Integer, Boolean, ForeignKey, Table, DateTime, LargeBinary, Unicode
 from sqlalchemy.orm import relationship, backref, mapper
 from zope.interface import implements
-from repoze.workflow import WorkflowError
-from repoze.workflow import get_workflow
-from pyramid.security import ALL_PERMISSIONS
-from pyramid.security import Allow, Authenticated
-from szcz.resources import szcz
 from szcz import Base, interfaces
 
-
-class Context(object):
-    """  Default context factory. """
-
-    __acl__ = [(Allow, Authenticated, 'view'),
-               (Allow, Authenticated, 'user_profile'),
-               (Allow, 'group:administrator', ALL_PERMISSIONS),
-               ]
-
-    def __init__(self, request):
-        szcz.need()
-        self.request = request
 
 
 class User(Base):
@@ -140,7 +123,7 @@ class GroupMember(Base):
     user = relationship(User, uselist=False, backref='groups')
 
 
-class Group(Base, Context):
+class Group(Base):
     implements(interfaces.IGroup)
 
     __tablename__ = 'groups'
@@ -167,19 +150,3 @@ class Group(Base, Context):
         group_membership = GroupMember(membership=membership)
         group_membership.user = user
         self.members.append(group_membership)
-
-    @property
-    def state_css(self):
-        if self.state == 'aktywna': return 'label label-success'
-        elif self.state == 'zablokowana': return 'label label-important'
-        else: return 'label'
-
-    def get_states(self, request):
-        return self.wf and self.wf.get_transitions(self, request) or []
-
-    @property
-    def wf(self):
-        try:
-            return get_workflow(self, 'GroupWorkflow')
-        except WorkflowError:
-            return None

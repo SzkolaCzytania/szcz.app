@@ -37,6 +37,8 @@ def main(global_config, **settings):
     config.include('velruse.providers.twitter')
     config.include('pyramid_beaker')
     config.include('deform_bootstrap')
+    config.include('pyramid_mailer')
+    config.include('pyramid_zcml')
 
     deform_templates = resource_filename('deform', 'templates')
     deform_bootstrap_templates = resource_filename('deform_bootstrap', 'templates')
@@ -57,19 +59,18 @@ def main(global_config, **settings):
 
     config.add_route('my_groups', '/groups/only_mine')
     config.add_route('list_groups', '/groups')
-    config.add_route('join_group', '/groups/{id:\d+}/join')
-    config.add_route('logo_group', '/groups/{id:\d+}/logo_view')
-    config.add_route('wf_group', '/groups/{id:\d+}/change_state')
     config.add_route('add_group', '/groups/+')
-    config.add_route('view_group', '/groups/{id:\d+}')
-    config.add_route('edit_group', '/groups/{id:\d+}/edit')
+    config.add_route('join_group', '/groups/{id:\d+}/join', factory='szcz.groups.GroupContext')
+    config.add_route('logo_group', '/groups/{id:\d+}/logo_view', factory='szcz.groups.GroupContext')
+    config.add_route('wf_group', '/groups/{id:\d+}/change_state', factory='szcz.groups.GroupContext')
+    config.add_route('view_group', '/groups/{id:\d+}', factory='szcz.groups.GroupContext')
+    config.add_route('edit_group', '/groups/{id:\d+}/edit', factory='szcz.groups.GroupContext')
 
     config.add_static_view('deform_static', 'deform:static')
     config.scan()
-    config.set_root_factory('szcz.models.Context')
+    config.set_root_factory('szcz.views.Context')
     config.set_session_factory(session_factory)
 
-    config.include('pyramid_zcml')
     config.load_zcml('workflow.zcml')
 
     return config.make_wsgi_app()

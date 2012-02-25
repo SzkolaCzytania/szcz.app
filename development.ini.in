@@ -21,6 +21,9 @@ pyramid.debug_templates = true
 pyramid.default_locale_name = en
 pyramid.includes = pyramid_debugtoolbar pyramid_tm
 sqlalchemy.url = postgresql://postgres:postgres@localhost/szcz
+mail.host = localhost
+mail.port = 8025
+
 
 session.type = file
 session.data_dir = %(here)s/data/sessions/data

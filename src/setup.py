@@ -9,6 +9,7 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 requires = [
     'pyramid',
     'pyramid_zcml',
+    'pyramid_mailer',
     'SQLAlchemy',
     'psycopg2',
     'transaction',
