@@ -18,6 +18,7 @@ requires = [
     'velruse',
     'pyramid_fanstatic',
     'js.bootstrap',
+    'js.lightbox',
     'pyramid_beaker',
     'deform_bootstrap',
     'deform',

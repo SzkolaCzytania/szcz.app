@@ -12,7 +12,8 @@
               <li><a href="#">Dodatki</a></li>
           </ul>
 
-          <img src="/groups/${group.id}/logo_view"/>
+          <a class="lightbox" href="/groups/${group.id}/logo_view"><img src="/groups/${group.id}/logo_view" height="100"/></a>
+
           <h2>${group.name}</h2>
 
           <table class="table table-striped">

@@ -22,7 +22,7 @@
               <tbody>
                 <tr tal:repeat="book canon.books()">
                   <td>
-                     <img src="http://www.szkolaczytania.org.pl${book.path}/leadImage_icon" class="thumbnail pull-left" style="margin-right:10px;">
+                     <a class="lightbox" href="http://www.szkolaczytania.org.pl${book.path}/leadImage_preview"><img src="http://www.szkolaczytania.org.pl${book.path}/leadImage_icon" class="thumbnail pull-left" style="margin-right:10px;"></a>
                      <a href="/books/${book.content_id}">${book.title}</a>
                   </td>
                   <td>

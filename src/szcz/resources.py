@@ -1,6 +1,7 @@
 from fanstatic import Library
 from fanstatic import Resource
 from fanstatic import Group
+from js.lightbox import lightbox
 from js.bootstrap import bootstrap_responsive_css, bootstrap_js
 from js.jquery_datatables import jquery_datatables_js
 
@@ -11,7 +12,7 @@ paging = Resource(library, 'paging.js', depends=[jquery_datatables_js])
 szcz_datatables_js = Resource(library, 'szcz_datatables.js', depends=[jquery_datatables_js])
 szcz_datatables_css = Resource(library, 'szcz_datatables.css')
 datatables = Group([paging, szcz_datatables_css, szcz_datatables_js])
-szcz = Group([css_resource, js_resource,])
+szcz = Group([css_resource, js_resource, lightbox])
 
 def pserve():
     """A script aware of static resource"""
