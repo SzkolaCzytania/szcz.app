@@ -24,7 +24,6 @@ sqlalchemy.url = postgresql://postgres:postgres@localhost/szcz
 mail.host = localhost
 mail.port = 8025
 
-
 session.type = file
 session.data_dir = %(here)s/data/sessions/data
 session.lock_dir = %(here)s/data/sessions/lock
