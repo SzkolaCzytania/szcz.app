@@ -67,6 +67,13 @@ class GroupContext(views.Context):
                 return True
         return False
 
+    @property
+    def is_member(self):
+        for group in self.request.user.groups:
+            if group.group_id == self.group.id:
+                return True
+        return False
+
     def has_permission(self, perm):
         return has_permission(perm, self, self.request)
 
@@ -116,6 +123,13 @@ def send_activation(content, info):
     mailer.send(message)
 
 
+def acept(content, info):
+    if not content.canBeActivated():
+        raise WorkflowError
+    else:
+        return send_aceptation(content, info)
+
+
 def send_aceptation(content, info):
     mailer = get_mailer(content.request)
     message = Message(subject=u"Prośba o akceptację grupy",
@@ -128,7 +142,7 @@ def send_aceptation(content, info):
 @view_config(route_name='list_groups', renderer='templates/list_groups.pt', permission='view')
 def list_groups(context, request):
     datatables.need()
-    groups = DBSession().query(Group).order_by(Group.name)
+    groups = DBSession().query(Group).filter_by(state=u'aktywna').order_by(Group.name)
     return {'request': request,
             'groups': groups,
             'main' : get_renderer('templates/master.pt').implementation()}

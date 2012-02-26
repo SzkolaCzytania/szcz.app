@@ -10,7 +10,7 @@
         <thead>
           <tr>
             <th class="yellow">Nazwa</th>
-            <th class="yellow">Adres</th>
+            <th class="yellow">Liczba uczestników</th>
             <th class="green">Książki</th>
           </tr>
         </thead>
@@ -20,7 +20,9 @@
               <a href="/groups/${group.id}">
                 ${group.name}
             </a></td>
-            <td>${group.address}</td>
+            <td>
+                ${len(group.members)}
+            </td>
             <td>
                 <tal:books repeat="book group.books">
                   <a href="/books/${book.content_id}">${book.title}</a><tal:not_last condition="not repeat.book.end">,</tal:not_last>

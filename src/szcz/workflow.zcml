@@ -35,7 +35,7 @@
       name="wyślij do akceptacji"
       from_state="w edycji"
       permission="edit"
-      callback="szcz.groups.send_aceptation"
+      callback="szcz.groups.acept"
       to_state="do akceptacji" />
 
    <transition

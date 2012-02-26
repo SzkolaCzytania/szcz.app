@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Text, String, Integer, Boolean, ForeignKey, Table, DateTime, LargeBinary, Unicode
+from sqlalchemy import Column, Text, String, Integer, Boolean, ForeignKey, Table, DateTime, LargeBinary, Unicode, Date
 from sqlalchemy.orm import relationship, backref, mapper
 from zope.interface import implements
 import uuid
@@ -11,7 +11,7 @@ class User(Base):
     given_name = Column(Text)
     family_name = Column(Text)
     address = Column(Text)
-    age = Column(Integer)
+    birth = Column(Date)
     sex = Column(String)
     terms = Column(Boolean, default=False)
 
@@ -136,7 +136,7 @@ class Group(Base):
     zip_code = Column(Text)
     members = relationship(GroupMember, backref='group')
     books = relationship(Book, secondary=group_books)
-    end_date = Column(DateTime)
+    end_date = Column(Date)
     state = Column(String(64), default='nieaktywna')
     activation = Column(String(36))
 

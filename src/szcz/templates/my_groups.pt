@@ -10,7 +10,9 @@
         <thead>
           <tr>
             <th class="yellow">Nazwa grupy</th>
+            <th class="yellow">Liczba uczestników</th>
             <th class="green">Książki</th>
+            <th class="blue">Status</th>
             <th class="blue">Rola</th>
           </tr>
         </thead>
@@ -20,14 +22,35 @@
                 ${group.group.name}
             </a></td>
             <td>
+                ${len(group.group.members)}
+            </td>
+            <td>
                 <tal:books repeat="book group.group.books">
                   <a href="/books/${book.content_id}">${book.title}</a><tal:not_last condition="not repeat.book.end">,</tal:not_last>
                 </tal:books>
             </td>
-            <td>${group.membership}</td>
+            <td>
+                <span>${group.group.state}</span>
+            </td>
+            <td>
+              <a rel="tooltip" data-original-title="Właściciel grupy"
+                 tal:condition="group.membership=='owner'" class="btn btn-success" href="#">
+                <i class="icon-home icon-white"></i>
+              </a>
+              <a rel="tooltip" data-original-title="Członek grupy"
+                 tal:condition="group.membership=='member'" class="btn" href="#">
+                 <i class="icon-user"></i>
+              </a>
+           </td>
           </tr>
         </tbody>
       </table>
+
+      <script>
+         $('.data_table').tooltip({
+            selector: "a[rel=tooltip]"
+         })
+      </script>
 
   </metal:container>
 </html>

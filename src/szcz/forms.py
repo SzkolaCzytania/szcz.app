@@ -82,7 +82,10 @@ class UserSchema(colander.Schema):
     address = colander.SchemaNode(colander.String(),
                                   widget=deform.widget.TextAreaWidget(rows=4, cols=60),
                                   title=u'Adres pocztowy')
-    age = colander.SchemaNode(colander.Integer(), title=u'Wiek')
+    birth = colander.SchemaNode(colander.Date(),
+                                validator=colander.Range(min=datetime.date.min,
+                                                         max=(datetime.date.today() - datetime.timedelta(18*365))),
+                                title=u'Data urodzenia')
     sex = colander.SchemaNode(colander.String(),
                               validator=colander.OneOf([x[0] for x in SEX]),
                               widget=deform.widget.RadioChoiceWidget(values=SEX),
