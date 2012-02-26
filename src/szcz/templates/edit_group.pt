@@ -1,6 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
        xmlns:tal="http://xml.zope.org/namespaces/tal"
        xmlns:metal="http://xml.zope.org/namespaces/metal"
+       i18n:domain="deform"
        metal:use-macro="main.macros['main']">
 
      <metal:container fill-slot="container">
@@ -12,11 +13,11 @@
           <h2>Edycja grupy ${group.name}</h2>
 
          <tal:form replace="structure form"/>
-        <script type="text/javascript">
-              jQuery(function() {
-                    deform.load();
-              });
-        </script>
+         <script type="text/javascript">
+                jQuery(function() {
+                      deform.load();
+                });
+         </script>
 
       </div>
 

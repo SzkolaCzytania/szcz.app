@@ -162,7 +162,6 @@ def maybe_remove_fields(node, kw):
 @view_config(route_name='edit_group', renderer='templates/edit_group.pt', permission='edit')
 @view_config(route_name='add_group', renderer='templates/add_group.pt', permission='view')
 def edit_group(context, request):
-
     if request.matchdict.has_key('id'):
         try:
             group = DBSession().query(Group).get(request.matchdict.get('id'))

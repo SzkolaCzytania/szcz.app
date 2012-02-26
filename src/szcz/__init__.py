@@ -1,6 +1,8 @@
 from pyramid.config import Configurator
 from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.i18n import get_localizer
+from pyramid.threadlocal import get_current_request
 from pyramid_beaker import session_factory_from_settings
 from pkg_resources import resource_filename
 from sqlalchemy import engine_from_config
@@ -44,7 +46,10 @@ def main(global_config, **settings):
     deform_bootstrap_templates = resource_filename('deform_bootstrap', 'templates')
     deform_szcz_templates = resource_filename('szcz', 'templates')
     search_path = (deform_szcz_templates, deform_bootstrap_templates, deform_templates)
-    Form.set_zpt_renderer(search_path)
+
+    def translator(term):
+        return get_localizer(get_current_request()).translate(term)
+    Form.set_zpt_renderer(search_path, translator=translator)
 
     config.add_route('home', '/')
     config.add_route('logout', '/logout')
@@ -71,6 +76,8 @@ def main(global_config, **settings):
     config.set_root_factory('szcz.views.Context')
     config.set_session_factory(session_factory)
 
+    config.add_translation_dirs('deform:locale')
+    config.add_translation_dirs('colander:locale')
     config.load_zcml('workflow.zcml')
 
     return config.make_wsgi_app()
