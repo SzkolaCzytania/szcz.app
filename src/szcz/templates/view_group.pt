@@ -12,35 +12,37 @@
           <a tal:condition="group.logo" class="lightbox" href="/groups/${group.id}/logo_view"><img src="/groups/${group.id}/logo_view" height="100"/></a>
           <h2>${group.name}</h2>
 
-          <table class="table table-striped">
-            <tbody>
-              <tr>
-                <td>Adres:</td>
-                <td>${group.address}</td>
-              </tr>
-              <tr>
-                <td>Książki:</td>
-                <td>
-                    <tal:books repeat="book group.books">
-                        <a href="/books/${book.content_id}">${book.title}</a><tal:not_last condition="not repeat.book.end">,</tal:not_last>
-                    </tal:books>
-                </td>
-              </tr>
-              <tr>
-                <td>Członkowie:</td>
-                <td>
-                    <tal:books repeat="member group.members">
-                       ${member.user.fullname}<tal:not_last condition="not repeat.member.end">,</tal:not_last>
-                    </tal:books>
-                </td>
-              </tr>
-              <tr>
-                <td>Data końcowa:</td>
-                <td>${group.end_date}</td>
-              </tr>
-            </tbody>
-          </table>
-
+          <div class="row-fluid">
+          <div class="span8">
+              <table class="table table-striped">
+                <tbody>
+                  <tr>
+                    <td>Książki:</td>
+                    <td>
+                        <tal:books repeat="book group.books">
+                            <a href="/books/${book.content_id}">${book.title}</a><tal:not_last condition="not repeat.book.end">,</tal:not_last>
+                        </tal:books>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Członkowie:</td>
+                    <td>
+                        <tal:books repeat="member group.members">
+                          ${member.user.fullname}<tal:not_last condition="not repeat.member.end">,</tal:not_last>
+                        </tal:books>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Data końcowa:</td>
+                    <td>${group.end_date}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="span4">
+              <img class="thumbnail" src="http://maps.googleapis.com/maps/api/staticmap?size=250x250&zoom=6&maptype=roadmap\&markers=size:mid%7Ccolor:red%7C${group.full_address}&sensor=false" />  
+            </div>
+          </div>
           <a class="btn btn-success" href="/groups/${group.id}/join">Dołącz do grupy</a>
       </div>
 

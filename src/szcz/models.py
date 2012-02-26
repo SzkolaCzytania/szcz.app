@@ -144,6 +144,10 @@ class Group(Base):
         super(Group, self).__init__(*args, **kwargs)
         self.activation = str(uuid.uuid1())
 
+    @property
+    def full_address(self):
+        return "%s, %s %s" % (self.address, self.zip_code, self.city)
+
     def add_book(self, book):
         if [b for b in self.books if b.content_id == book.content_id]:
             return
