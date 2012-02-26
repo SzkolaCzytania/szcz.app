@@ -70,6 +70,42 @@ class GroupContext(views.Context):
     def has_permission(self, perm):
         return has_permission(perm, self, self.request)
 
+    def canBeActivated(self):
+
+        def metadata_check(group):
+            if group.name and \
+                   group.address and \
+                   group.city and \
+                   group.zip_code and \
+                   group.end_date and \
+                   group.activation:
+                return True
+            else:
+                self.request.session.flash({'title':u'Błąd!','body': u'Proszę uzupełnić dane grupy.'},queue='error')
+                return False
+
+        def members_check(group):
+            if len(group.members) < 2:
+                self.request.session.flash({'title':u'Błąd!','body': u'Grupa musi mieć minimum 2 uczestników.'},queue='error')
+                return False
+            else:
+                return True
+        
+        def books_check(group):
+            if len(group.books) < len(group.members):
+                self.request.session.flash({'title':u'Błąd!','body': u'Grupa ma więcej uczestników niż książek.'},queue='error')
+                return False
+            else:
+                return True
+
+        return metadata_check(self.group) and members_check(self.group) and books_check(self.group)
+
+
+def activate(content, info):
+    if not content.canBeActivated():
+        raise WorkflowError
+    else:
+        return send_activation(content, info)
 
 def send_activation(content, info):
     mailer = get_mailer(content.request)
@@ -132,6 +168,7 @@ def change_group_state(context, request):
         context.wf.transition_to_state(context, request, request.params.get('destination'), skip_same=False)
     except WorkflowError:
         request.session.flash({'title':u'Błąd!','body': u'Nie udało się zmienić statusu.'},queue='error')
+        return HTTPFound(location = '/groups/%s' % context.group.id)
     request.session.flash({'title':u'Gotowe!','body': u'Status grupy został uaktualniony.'},queue='success')
     return HTTPFound(location = '/groups/%s' % context.group.id)
 

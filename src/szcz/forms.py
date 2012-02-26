@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import deform
 import colander
+import datetime
 from cStringIO import StringIO
 from pyramid.view import view_config
 from pyramid.renderers import get_renderer
@@ -8,7 +9,6 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from fanstaticdeform import deform_resource
 from sqlalchemy.exc import SQLAlchemyError
-from repoze.workflow import WorkflowError
 from szcz.models import Group#, File
 from szcz import DBSession
 
@@ -106,7 +106,6 @@ def userprofile(context, request):
         try:
             appstruct = form.validate(items)
         except deform.ValidationFailure, e:
-            request.session.flash({'title':u'Błędy','body': u'Popraw zaznaczone błędy'},queue='error')
             return {'form': e.render(),
                     'main':  get_renderer('templates/master.pt').implementation(),}
 
@@ -121,8 +120,16 @@ def userprofile(context, request):
 
 @colander.deferred
 def deferred_activation_validator(node, kw):
-    """BBB: to be finished """
-    return colander.OneOf(['123456789','abcdefghijk'])
+
+    class CheckUuid(object):
+        def __init__(self, group):
+            self.group = group
+
+        def __call__(self, node, value):
+            if value != self.group.activation:
+                raise colander.Invalid(node, u'Zły kod aktywacyjny')
+
+    return CheckUuid(kw['group'])
 
 
 class GroupSchema(colander.Schema):
@@ -133,7 +140,10 @@ class GroupSchema(colander.Schema):
     address = colander.SchemaNode(colander.String(), title=u'Adres')
     zip_code = colander.SchemaNode(colander.String(), title=u'Kod pocztowy')
     city = colander.SchemaNode(colander.String(), title=u'Miejscowość')
-    end_date = colander.SchemaNode(colander.Date(), title=u'Data ważności grupy')
+    end_date = colander.SchemaNode(colander.Date(),
+                                   validator=colander.Range(min=(datetime.date.today() + datetime.timedelta(30)),
+                                                            max=(datetime.date.today() + datetime.timedelta(365))),
+                                   title=u'Data ważności grupy')
     activation_code = colander.SchemaNode(colander.String(), missing=colander.null,
                                           validator=deferred_activation_validator,
                                           title=u'Kod aktywacyjny')
@@ -151,7 +161,7 @@ def maybe_remove_fields(node, kw):
 
 @view_config(route_name='edit_group', renderer='templates/edit_group.pt', permission='edit')
 @view_config(route_name='add_group', renderer='templates/add_group.pt', permission='view')
-def add_group(context, request):
+def edit_group(context, request):
 
     if request.matchdict.has_key('id'):
         try:
@@ -176,7 +186,6 @@ def add_group(context, request):
         try:
             appstruct = form.validate(items)
         except deform.ValidationFailure, e:
-            request.session.flash({'title':u'Błędy','body': u'Popraw zaznaczone błędy'},queue='error')
             return {'form': e.render(),
                     'group_nav':  get_renderer('templates/group_macros.pt').implementation(),
                     'group': group,

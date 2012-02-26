@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Text, String, Integer, Boolean, ForeignKey, Table, DateTime, LargeBinary, Unicode
 from sqlalchemy.orm import relationship, backref, mapper
 from zope.interface import implements
+import uuid
 from szcz import Base, interfaces
-
 
 
 class User(Base):
@@ -138,6 +138,11 @@ class Group(Base):
     books = relationship(Book, secondary=group_books)
     end_date = Column(DateTime)
     state = Column(String(64), default='nieaktywna')
+    activation = Column(String(36))
+
+    def __init__(self, *args, **kwargs):
+        super(Group, self).__init__(*args, **kwargs)
+        self.activation = str(uuid.uuid1())
 
     def add_book(self, book):
         if [b for b in self.books if b.content_id == book.content_id]:

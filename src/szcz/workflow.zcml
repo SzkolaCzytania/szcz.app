@@ -22,7 +22,7 @@
       name="aktywacja"
       from_state="nieaktywna"
       permission="edit"
-      callback="szcz.groups.send_activation"
+      callback="szcz.groups.activate"
       to_state="w trakcie aktywacji" />
 
    <transition
