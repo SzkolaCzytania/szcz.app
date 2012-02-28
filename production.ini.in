@@ -33,6 +33,7 @@ session.cookie_on_exception = true
 
 fanstatic.bottom = true
 fanstatic.debug = false
+fanstatic.minified = true
 
 velruse.store = velruse.store.sqlstore.SQLStore
 velruse.store.url = postgresql://postgres:${conf:postgres_pass}@localhost/szcz
