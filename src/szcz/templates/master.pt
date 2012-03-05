@@ -137,8 +137,12 @@
         <div class="container-fluid">
           <div class="row-fluid">
             <div class="span4">&nbsp;</div>
-            <div class="copyright span4">
+            <div class="copyright span2">
               © 2011 - All rights reserved
+            </div>
+             <div class="span3">
+                <a href="http://www.pylonsproject.org/" target="_blank" title="powered by Pyramid">
+                  <img src="/fanstatic/szcz/img/pyramid.png" height="20" alt="powered by Pyramid"></a>
             </div>
           </div>
         </div>
