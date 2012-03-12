@@ -28,9 +28,12 @@ class GroupContext(views.Context):
                 self.__acl__.append((Allow, request.user.email, 'edit'),)
             self.__acl__.append((Allow, request.user.email, 'review'),)
 
+    def _get_state(self):
+        return self.group.state
 
-    def _get_state(self): return self.group.state
-    def _set_state(self, value): self.group.state = value
+    def _set_state(self, value):
+        self.group.state = value
+
     state = property(fget=_get_state, fset=_set_state)
 
     @property
@@ -45,9 +48,12 @@ class GroupContext(views.Context):
 
     @property
     def state_css(self):
-        if self.state == 'aktywna': return 'label label-success'
-        elif self.state == 'zablokowana': return 'label label-important'
-        else: return 'label'
+        if self.state == 'aktywna':
+            return 'label label-success'
+        elif self.state == 'zablokowana':
+            return 'label label-important'
+        else:
+            return 'label'
 
     @property
     def states(self):
@@ -88,19 +94,25 @@ class GroupContext(views.Context):
                    group.activation:
                 return True
             else:
-                self.request.session.flash({'title':u'Błąd!','body': u'Proszę uzupełnić dane grupy.'},queue='error')
+                self.request.session.flash({'title': u'Błąd!',
+                                             'body': u'Proszę uzupełnić dane grupy.'},
+                                            queue='error')
                 return False
 
         def members_check(group):
             if len(group.members) < 2:
-                self.request.session.flash({'title':u'Błąd!','body': u'Grupa musi mieć minimum 2 uczestników.'},queue='error')
+                self.request.session.flash({'title': u'Błąd!',
+                                             'body': u'Grupa musi mieć minimum 2 uczestników.'},
+                                             queue='error')
                 return False
             else:
                 return True
-        
+
         def books_check(group):
             if len(group.books) < len(group.members):
-                self.request.session.flash({'title':u'Błąd!','body': u'Grupa ma więcej uczestników niż książek.'},queue='error')
+                self.request.session.flash({'title': u'Błąd!',
+                                             'body': u'Grupa ma więcej uczestników niż książek.'},
+                                             queue='error')
                 return False
             else:
                 return True
@@ -113,6 +125,7 @@ def activate(content, info):
         raise WorkflowError
     else:
         return send_activation(content, info)
+
 
 def send_activation(content, info):
     mailer = get_mailer(content.request)
@@ -145,7 +158,7 @@ def list_groups(context, request):
     groups = DBSession().query(Group).filter_by(state=u'aktywna').order_by(Group.name)
     return {'request': request,
             'groups': groups,
-            'main' : get_renderer('templates/master.pt').implementation()}
+            'main': get_renderer('templates/master.pt').implementation()}
 
 
 @view_config(route_name='my_groups', renderer='templates/my_groups.pt', permission='view')
@@ -153,26 +166,26 @@ def my_groups(context, request):
     groups = request.user.groups
     return {'request': request,
             'groups': groups,
-            'main' : get_renderer('templates/master.pt').implementation()}
+            'main': get_renderer('templates/master.pt').implementation()}
 
 
 @view_config(route_name='view_group', renderer='templates/view_group.pt', permission='view')
 def view_group(context, request):
     return {'request': request,
             'group': context.group,
-            'group_nav' : get_renderer('templates/group_macros.pt').implementation(),
-            'main' : get_renderer('templates/master.pt').implementation()}
+            'group_nav': get_renderer('templates/group_macros.pt').implementation(),
+            'main': get_renderer('templates/master.pt').implementation()}
 
 
 @view_config(route_name='logo_group', permission='view')
 def logo_group(context, request):
-    logo = context.group.logo 
+    logo = context.group.logo
     if not logo:
         raise HTTPNotFound
     return Response(headerlist=[('Content-Disposition', '%s;filename="%s"' % (
                                  'inline', logo.filename.encode('ascii', 'ignore'))),
                                 ('Content-Length', str(logo.size)),
-                                ('Content-Type', str(logo.mimetype)),],
+                                ('Content-Type', str(logo.mimetype))],
                     app_iter=logo.data,)
 
 
@@ -181,14 +194,16 @@ def change_group_state(context, request):
     try:
         context.wf.transition_to_state(context, request, request.params.get('destination'), skip_same=False)
     except WorkflowError:
-        request.session.flash({'title':u'Błąd!','body': u'Nie udało się zmienić statusu.'},queue='error')
-        return HTTPFound(location = '/groups/%s' % context.group.id)
-    request.session.flash({'title':u'Gotowe!','body': u'Status grupy został uaktualniony.'},queue='success')
-    return HTTPFound(location = '/groups/%s' % context.group.id)
+        request.session.flash({'title': u'Błąd!', 'body': u'Nie udało się zmienić statusu.'}, queue='error')
+        return HTTPFound(location='/groups/%s' % context.group.id)
+    request.session.flash({'title': u'Gotowe!', 'body': u'Status grupy został uaktualniony.'}, queue='success')
+    return HTTPFound(location='/groups/%s' % context.group.id)
 
 
 @view_config(route_name='join_group', permission='view')
 def join_group(context, request):
     context.group.add_member(request.user, 'member')
-    request.session.flash({'title':u'Gotowe!','body': u'Zostałeś członkiem grupy %s.' % context.group.name},queue='success')
-    return HTTPFound(location = '/groups/%s' % context.group.id)
+    request.session.flash({'title': u'Gotowe!',
+                            'body': u'Zostałeś członkiem grupy %s.' % context.group.name},
+                            queue='success')
+    return HTTPFound(location='/groups/%s' % context.group.id)

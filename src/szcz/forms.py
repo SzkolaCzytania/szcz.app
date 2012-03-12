@@ -9,7 +9,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from fanstaticdeform import deform_resource
 from sqlalchemy.exc import SQLAlchemyError
-from szcz.models import Group#, File
+from szcz.models import Group  # , File
 from szcz import DBSession
 
 
@@ -20,7 +20,7 @@ def record_to_appstruct(self):
 def merge_session_with_post(session, post):
     if not isinstance(post, dict):
         return None
-    for key,value in post.items():
+    for key, value in post.items():
         setattr(session, key, value)
     return session
 
@@ -75,7 +75,7 @@ def deferred_fileupload_widget(node, kw):
 
 class UserSchema(colander.Schema):
 
-    SEX = ((u'male',u'Mężczyzna'),(u'female',u'Kobieta'))
+    SEX = ((u'male', u'Mężczyzna'), (u'female', u'Kobieta'))
 
     given_name = colander.SchemaNode(colander.String(), title=u'Imię')
     family_name = colander.SchemaNode(colander.String(), title=u'Nazwisko')
@@ -84,7 +84,7 @@ class UserSchema(colander.Schema):
                                   title=u'Adres pocztowy')
     birth = colander.SchemaNode(colander.Date(),
                                 validator=colander.Range(min=datetime.date.min,
-                                                         max=(datetime.date.today() - datetime.timedelta(18*365))),
+                                                         max=(datetime.date.today() - datetime.timedelta(18 * 365))),
                                 title=u'Data urodzenia')
     sex = colander.SchemaNode(colander.String(),
                               validator=colander.OneOf([x[0] for x in SEX]),
@@ -97,28 +97,30 @@ class UserSchema(colander.Schema):
 def userprofile(context, request):
     user = request.user
     schema = UserSchema()
-    form = deform.Form(schema, buttons=('zapisz','anuluj'), css_class=u'form-horizontal')
+    form = deform.Form(schema, buttons=('zapisz', 'anuluj'), css_class=u'form-horizontal')
     deform_resource.needsFor(form)
     form['terms'].widget.template = 'szcz_terms'
 
     if request.POST:
         if not 'zapisz' in request.POST:
-            return HTTPFound(location = '/')
+            return HTTPFound(location='/')
 
         items = request.POST.items()
         try:
             appstruct = form.validate(items)
         except deform.ValidationFailure, e:
             return {'form': e.render(),
-                    'main':  get_renderer('templates/master.pt').implementation(),}
+                    'main':  get_renderer('templates/master.pt').implementation()}
 
         user = merge_session_with_post(user, appstruct)
-        request.session.flash({'title':u'Gotowe!','body': u'Aktualizacja profilu zakończyła się sukcesem.'},queue='success')
-        return HTTPFound(location = '/')
+        request.session.flash({'title': u'Gotowe!',
+                                'body': u'Aktualizacja profilu zakończyła się sukcesem.'},
+                                queue='success')
+        return HTTPFound(location='/')
 
     appstruct = record_to_appstruct(user)
-    return {'form':form.render(appstruct=appstruct),
-            'main':  get_renderer('templates/master.pt').implementation(),}
+    return {'form': form.render(appstruct=appstruct),
+            'main': get_renderer('templates/master.pt').implementation()}
 
 
 @colander.deferred
@@ -165,7 +167,7 @@ def maybe_remove_fields(node, kw):
 @view_config(route_name='edit_group', renderer='templates/edit_group.pt', permission='edit')
 @view_config(route_name='add_group', renderer='templates/add_group.pt', permission='view')
 def edit_group(context, request):
-    if request.matchdict.has_key('id'):
+    if 'id' in request.matchdict:
         try:
             group = DBSession().query(Group).get(request.matchdict.get('id'))
             is_new = False
@@ -178,12 +180,12 @@ def edit_group(context, request):
         is_new = True
 
     schema = GroupSchema(after_bind=maybe_remove_fields).bind(request=request, group=group)
-    form = deform.Form(schema, buttons=('zapisz','anuluj'), css_class=u'form-horizontal')
+    form = deform.Form(schema, buttons=('zapisz', 'anuluj'), css_class=u'form-horizontal')
     deform_resource.needsFor(form)
 
     if request.POST:
         if not 'zapisz' in request.POST:
-            return HTTPFound(location = '/groups/only_mine')
+            return HTTPFound(location='/groups/only_mine')
         items = request.POST.items()
         try:
             appstruct = form.validate(items)
@@ -191,7 +193,7 @@ def edit_group(context, request):
             return {'form': e.render(),
                     'group_nav':  get_renderer('templates/group_macros.pt').implementation(),
                     'group': group,
-                    'main':  get_renderer('templates/master.pt').implementation(),}
+                    'main':  get_renderer('templates/master.pt').implementation()}
 
 #        logo = merge_session_with_post(File(),appstruct.pop('logo'))
 #        if logo:
@@ -202,23 +204,27 @@ def edit_group(context, request):
 
         if 'activation_code' in request.POST:
             group.state = u'aktywna'
-            request.session.flash({'title':u'Gotowe!','body': u'Grupa %s została aktywowana.' % group.name},queue='success')
-            return HTTPFound(location = '/groups/%s' % group.id)
+            request.session.flash({'title': u'Gotowe!',
+                                    'body': u'Grupa %s została aktywowana.' % group.name},
+                                    queue='success')
+            return HTTPFound(location='/groups/%s' % group.id)
 
         group = merge_session_with_post(group, appstruct)
         group.add_member(request.user, 'owner')
         session = DBSession()
         session.add(group)
         if is_new:
-            request.session.flash({'title':u'Gotowe!','body': u'Grupa %s została stworzona.' % group.name},queue='success')
+            request.session.flash({'title': u'Gotowe!',
+                                    'body': u'Grupa %s została stworzona.' % group.name},
+                                    queue='success')
         else:
-            request.session.flash({'title':u'Gotowe!','body': u'Grupa %s została zaktualizowana.' % group.name},queue='success')
-        return HTTPFound(location = '/groups/only_mine')
-
+            request.session.flash({'title': u'Gotowe!',
+                                    'body': u'Grupa %s została zaktualizowana.' % group.name},
+                                    queue='success')
+        return HTTPFound(location='/groups/only_mine')
 
     appstruct = record_to_appstruct(group)
-    return {'form':form.render(appstruct=appstruct),
+    return {'form': form.render(appstruct=appstruct),
             'group': group,
             'group_nav':  get_renderer('templates/group_macros.pt').implementation(),
-            'main':  get_renderer('templates/master.pt').implementation(),}
-
+            'main': get_renderer('templates/master.pt').implementation()}

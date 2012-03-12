@@ -67,9 +67,9 @@ class Content(Base):
                              backref=backref("source", remote_side=[relations.c.source_id]))
     __mapper_args__ = {'polymorphic_identity': 'content', 'polymorphic_on': object_type}
 
-mapper(Relation, relations, 
-       properties = {'target': relationship(Content, uselist=False,
-                                            primaryjoin=Content.content_id==relations.c.target_id)})
+mapper(Relation, relations,
+       properties={'target': relationship(Content, uselist=False,
+                   primaryjoin=Content.content_id == relations.c.target_id)})
 
 
 class Book(Content):
@@ -83,7 +83,7 @@ class Book(Content):
     isbn = Column(Text)
 
     def authors(self):
-        return [r.target for r in self.relations if r.relationship=='book_author']
+        return [r.target for r in self.relations if r.relationship == 'book_author']
 
 
 class Canon(Content):
@@ -94,11 +94,11 @@ class Canon(Content):
     text = Column(Text)
 
     def books(self):
-        books = [r.target for r in self.relations if r.relationship=='canon_book']
+        books = [r.target for r in self.relations if r.relationship == 'canon_book']
         return sorted(books, key=lambda book: book.title)
 
     def authors(self):
-        return [r.target for r in self.relations if r.relationship=='canon_author']
+        return [r.target for r in self.relations if r.relationship == 'canon_author']
 
 
 class Author(Content):

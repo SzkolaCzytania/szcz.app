@@ -14,6 +14,7 @@ szcz_datatables_css = Resource(library, 'szcz_datatables.css')
 datatables = Group([paging, szcz_datatables_css, szcz_datatables_js])
 szcz = Group([css_resource, js_resource, lightbox])
 
+
 def pserve():
     """A script aware of static resource"""
     import pyramid.scripts.pserve
