@@ -13,7 +13,7 @@ from szcz.resources import datatables
 
 class Context(object):
     """  Default context factory. """
-    __acl__ = [(Allow, Authenticated, 'view'),
+    __acl__ = [(Allow, 'group:activated_users', 'view'),
                (Allow, Authenticated, 'user_profile'),
                (Allow, 'group:administrator', ALL_PERMISSIONS),
                ]

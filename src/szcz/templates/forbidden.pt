@@ -1,0 +1,28 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:tal="http://xml.zope.org/namespaces/tal"
+       xmlns:metal="http://xml.zope.org/namespaces/metal"
+       metal:use-macro="main.macros['main']">
+
+
+       <metal:sidebar fill-slot="sidebar">
+        <div class="span2">
+         &nbsp;
+       </div>
+       </metal:sidebar>
+
+       <div metal:fill-slot="container">
+          <div class="modal loginbox">
+              <div class="modal-header">
+                  <h3>Brakuje ci uprawnień</h3>
+              </div>
+              <div class="modal-body">
+                <p>Nie możesz zobaczyć żądanej strony. Sprawdź czy uzupełnieś prawidłowo swój
+                <a class="btn btn-primary" href="/profile"><i class="icon-user icon-white"></i> profil</a> użytkownika.</p>
+              </div>
+              <div class="modal-footer">
+                W razie problemów skontaktuj się z nami: <a href="mailto:info@szkolaczytania.org.pl">info@szkolaczytania.org.pl</a>.
+              </div>
+       </div>
+    </div>
+</html>
+

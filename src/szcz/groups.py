@@ -3,7 +3,7 @@ from pyramid.view import view_config
 from pyramid.renderers import get_renderer
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.response import Response
-from pyramid.security import Allow, Authenticated, has_permission
+from pyramid.security import Allow, has_permission
 from pyramid.security import ALL_PERMISSIONS
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
@@ -16,11 +16,9 @@ from szcz.resources import datatables
 
 
 class GroupContext(views.Context):
-
     def __init__(self, request):
         super(GroupContext, self).__init__(request)
-        self.__acl__ = [(Allow, Authenticated, 'view'),
-                        (Allow, Authenticated, 'user_profile'),
+        self.__acl__ = [(Allow, 'group:activated_users', 'view'),
                         (Allow, 'group:administrator', ALL_PERMISSIONS),
                         ]
         if self.is_owner:

@@ -24,6 +24,17 @@ class User(Base):
             for book in membership.group.books:
                 yield book
 
+    def isActivated(self):
+        if self.given_name and \
+           self.family_name and \
+           self.address and \
+           self.birth and \
+           self.sex and \
+           self.terms:
+            return True
+        else:
+            return False
+
 
 class File(Base):
     __tablename__ = 'related_files'
