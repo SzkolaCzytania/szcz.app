@@ -61,8 +61,7 @@ body {
 }
 
 .copyright {
-  background: transparent url(img/logo_mini.png) no-repeat left center;
-  padding-left: 110px;
+  text-align:center;
 }
 a.followFB,
 a.followTW {
