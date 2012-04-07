@@ -208,7 +208,7 @@ def manage_group_members(context, request):
                               sender=user.email,
                               recipients=["%s" % email],
                               body=u"""%s chce abyś dołączył do grupy %s w serwisie Szkoła Czytania.
-                              Aby zaakceptować zaproszenie przejdź do adresu: %s/groups/%s/join""" % (
+Aby zaakceptować zaproszenie przejdź do adresu: %s/groups/%s/join""" % (
                                         user.fullname, group.name, request.application_url, group.id))
             mailer.send_to_queue(message)
 
