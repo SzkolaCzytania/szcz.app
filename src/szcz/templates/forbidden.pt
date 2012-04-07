@@ -16,11 +16,11 @@
                   <h3>Brakuje ci uprawnień</h3>
               </div>
               <div class="modal-body">
-                <p>Nie możesz zobaczyć żądanej strony. Sprawdź czy uzupełnieś prawidłowo swój
-                <a class="btn btn-primary" href="/profile"><i class="icon-user icon-white"></i> profil</a> użytkownika.</p>
+                <p>Nie możesz zobaczyć żądanej strony. Sprawdź czy uzupełnieś prawidłowo swój profil użytkownika.
+                <br />W razie problemów skontaktuj się z nami: <a href="mailto:info@szkolaczytania.org.pl">info@szkolaczytania.org.pl</a>.</p>
               </div>
               <div class="modal-footer">
-                W razie problemów skontaktuj się z nami: <a href="mailto:info@szkolaczytania.org.pl">info@szkolaczytania.org.pl</a>.
+                <a class="btn btn-primary" href="/profile"><i class="icon-user icon-white"></i> aktualizuj profil użytkownika</a>
               </div>
        </div>
     </div>
