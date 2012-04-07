@@ -52,4 +52,30 @@
 
 </workflow>
 
+<!-- GroupMembership workflow -->
+
+<workflow
+   type="GroupMembershipWorkflow"
+   name="Group membership workflow"
+   state_attr="membership_state"
+   content_types="szcz.interfaces.IGroupMembership"
+   permission_checker="pyramid.security.has_permission"
+   initial_state="nieaktywny">
+
+   <state name="nieaktywny"></state>
+   <state name="aktywny"></state>
+
+   <transition
+      name="aktywacja"
+      from_state="nieaktywny"
+      permission="edit"
+      to_state="aktywny" />
+
+   <transition
+      name="dezaktywacja"
+      from_state="aktywny"
+      permission="edit"
+      to_state="nieaktywny" />
+
+</workflow>
 </configure>

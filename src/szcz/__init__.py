@@ -68,8 +68,10 @@ def main(global_config, **settings):
     config.add_route('join_group', '/groups/{id:\d+}/join', factory='szcz.groups.GroupContext')
     config.add_route('logo_group', '/groups/{id:\d+}/logo_view', factory='szcz.groups.GroupContext')
     config.add_route('wf_group', '/groups/{id:\d+}/change_state', factory='szcz.groups.GroupContext')
+    config.add_route('wf_groupmembership', '/groups/{id:\d+}/member/{email}/change_state', factory='szcz.groups.GroupContext')
     config.add_route('view_group', '/groups/{id:\d+}', factory='szcz.groups.GroupContext')
     config.add_route('edit_group', '/groups/{id:\d+}/edit', factory='szcz.groups.GroupContext')
+    config.add_route('manage_group_members', '/groups/{id:\d+}/manage_group_members', factory='szcz.groups.GroupContext')
 
     config.add_static_view('deform_static', 'deform:static')
     config.scan()

@@ -2,8 +2,11 @@
 import deform
 import colander
 import datetime
+
 from cStringIO import StringIO
 from pyramid.view import view_config
+from pyramid_mailer import get_mailer
+from pyramid_mailer.message import Message
 from pyramid.renderers import get_renderer
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
@@ -139,9 +142,6 @@ def deferred_activation_validator(node, kw):
 
 class GroupSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(), title=u'Nazwa')
-#    logo = colander.SchemaNode(deform.FileData(),
-#                               missing = colander.null,
-#                               widget=deferred_fileupload_widget)
     address = colander.SchemaNode(colander.String(), title=u'Adres')
     zip_code = colander.SchemaNode(colander.String(), title=u'Kod pocztowy')
     city = colander.SchemaNode(colander.String(), title=u'Miejscowość')
@@ -154,6 +154,15 @@ class GroupSchema(colander.Schema):
                                           title=u'Kod aktywacyjny')
 
 
+class ManageGroupMembers(colander.Schema):
+
+    class Sequence(colander.SequenceSchema):
+        email = colander.SchemaNode(colander.String(),
+                                    title = u'adres email',
+                                    validator=colander.Email())
+    emails = Sequence(title=u'Adresy email')
+
+
 def maybe_remove_fields(node, kw):
     if kw['group'].state != u'w trakcie aktywacji':
         del node['activation_code']
@@ -162,6 +171,56 @@ def maybe_remove_fields(node, kw):
         del node['zip_code']
         del node['city']
         del node['end_date']
+
+
+@view_config(route_name='manage_group_members', renderer='templates/manage_group_members.pt', permission='edit')
+def manage_group_members(context, request):
+    try:
+        group = DBSession().query(Group).get(request.matchdict.get('id'))
+    except SQLAlchemyError:
+        raise HTTPNotFound
+    if not group:
+        raise HTTPNotFound
+
+    schema = ManageGroupMembers().bind(request=request, group=group)
+    form = deform.Form(schema, buttons=(u'zaproś', 'anuluj'), css_class=u'')
+    form['emails'].widget = deform.widget.SequenceWidget(min_len=1)
+    deform_resource.needsFor(form)
+
+    if request.POST:
+        if not u'zaproś' in request.POST:
+            return HTTPFound(location='/groups/%s' % group.id)
+        items = request.POST.items()
+        try:
+            appstruct = form.validate(items)
+        except deform.ValidationFailure, e:
+            return {'form': e.render(),
+                    'group_nav':  get_renderer('templates/group_macros.pt').implementation(),
+                    'group': group,
+                    'main':  get_renderer('templates/master.pt').implementation()}
+
+
+        emails = set(appstruct.get('emails'))
+        user = request.user
+        for email in emails:
+            mailer = get_mailer(request)
+            message = Message(subject=u"Prośba o dołączenie do grupy %s" % group.name,
+                              sender=user.email,
+                              recipients=["%s" % email],
+                              body=u"""%s chce abyś dołączył do grupy %s w serwisie Szkoła Czytania.
+                              Aby zaakceptować zaproszenie przejdź do adresu: %s/groups/%s/join""" % (
+                                        user.fullname, group.name, request.application_url, group.id))
+            mailer.send_to_queue(message)
+
+        request.session.flash({'title': u'Gotowe!',
+                               'body': u'Zaproszenia zostały wysłane do: %s' % (','.join(emails))},
+                               queue='success')
+        return HTTPFound(location='/groups/%s' % group.id)
+
+    return {'form': form.render(),
+            'group': group,
+            'group_nav':  get_renderer('templates/group_macros.pt').implementation(),
+            'main': get_renderer('templates/master.pt').implementation()}
 
 
 @view_config(route_name='edit_group', renderer='templates/edit_group.pt', permission='edit')
@@ -194,13 +253,6 @@ def edit_group(context, request):
                     'group_nav':  get_renderer('templates/group_macros.pt').implementation(),
                     'group': group,
                     'main':  get_renderer('templates/master.pt').implementation()}
-
-#        logo = merge_session_with_post(File(),appstruct.pop('logo'))
-#        if logo:
-#            logo.fp.seek(0)
-#            data = logo.fp.read()
-#            logo.data = data
-#            logo.size = len(data)
 
         if 'activation_code' in request.POST:
             group.state = u'aktywna'

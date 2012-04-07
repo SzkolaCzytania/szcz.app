@@ -1,0 +1,55 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:tal="http://xml.zope.org/namespaces/tal"
+       xmlns:metal="http://xml.zope.org/namespaces/metal"
+       i18n:domain="deform"
+       metal:use-macro="main.macros['main']">
+
+     <metal:container fill-slot="container">
+
+      <div class="well">
+
+          <metal:group_nav use-macro="group_nav.macros['nav']" />
+
+            <h3>Aktualni członkowie grupy:</h3>
+            <table class="data_table table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th class="yellow">Imię i nazwisko</th>
+                    <th class="blue">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr tal:repeat="member group.members">
+                    <td>${member.user.fullname}</td>
+                    <td>
+                      <div class="btn-group">
+                            <button class="btn ${member.state_css}">${member.state}</button>
+                            <button class="btn ${member.state_css} dropdown-toggle" data-toggle="dropdown">
+                               <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li tal:condition="member.state=='nieaktywny'">
+                                  <a href="/groups/${group.id}/member/${member.user_id}/change_state?destination=aktywny">Aktywuj</a>
+                              </li>
+                              <li tal:condition="member.state=='aktywny'">
+                                  <a href="/groups/${group.id}/member/${member.user_id}/change_state?destination=nieaktywny">Deaktywuj</a>
+                              </li>
+                            </ul>
+                        </div>
+                    </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <h3>Zaproś nowe osoby</h3>  
+                <tal:form replace="structure form"/>
+                <script type="text/javascript">
+                        jQuery(function() {
+                              deform.load();
+                        });
+                </script>
+
+      </div>
+
+</metal:container>
+</html>

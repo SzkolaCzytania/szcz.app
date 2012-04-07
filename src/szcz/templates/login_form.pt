@@ -13,10 +13,11 @@
        <div metal:fill-slot="container">
           <div class="modal loginbox">
               <div class="modal-header">
-                  <h3>Zaloguj się w Szkole Czytania</h3>
+                  <h3>Witaj w Szkole Czytania!</h3>
               </div>
               <div class="modal-body">
-                <p>Wybierz sposób logowania w serwisie. Jeżeli nie masz jeszcze konta, zostanie ono automatycznie utworzone.</p>
+                <p>Aby otrzymać dostęp do tęj części serwisu, musisz się zalogować.</p>
+                <p>Możesz to uczynić na kilka sposobów. Jeżeli nie masz jeszcze konta, zostanie ono automatycznie utworzone.</p>
               </div>
               <div class="modal-footer">
                 <form id="facebook" action="${request.application_url}/facebook/login" method="post">
@@ -36,13 +37,13 @@
                     <i class="icon-off icon-white"></i>
                     Facebook
                   </button>
-                  <button id="twitter-button" type="submit" class="btn btn-info" disabled>
-                    <i class="icon-off icon-white"></i>
-                    Twitter
-                  </button>
                   <button id="google-button" type="submit" class="btn btn-success">
                     <i class="icon-off icon-white"></i>
                     Google
+                  </button>
+                  <button id="twitter-button" type="submit" class="btn" disabled>
+                    <i class="icon-off icon-white"></i>
+                    Twitter
                   </button>
                 </div>
             <script>

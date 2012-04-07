@@ -10,21 +10,29 @@ from pyramid_mailer.message import Message
 from sqlalchemy.exc import SQLAlchemyError
 from repoze.workflow import WorkflowError
 from repoze.workflow import get_workflow
-from szcz.models import Group
+from szcz.models import Group, GroupMember
 from szcz import DBSession, views
 from szcz.resources import datatables
+
+
+PRIVATE = ['nieaktywna', 'w trakcie aktywacji', 'w edycji']
 
 
 class GroupContext(views.Context):
     def __init__(self, request):
         super(GroupContext, self).__init__(request)
-        self.__acl__ = [(Allow, 'group:activated_users', 'view'),
-                        (Allow, 'group:administrator', ALL_PERMISSIONS),
-                        ]
+        self.__acl__ = [(Allow, 'group:administrator', ALL_PERMISSIONS)]
+
         if self.is_owner:
-            if self.group.state in ['nieaktywna', 'w trakcie aktywacji', 'w edycji']:
-                self.__acl__.append((Allow, request.user.email, 'edit'),)
-            self.__acl__.append((Allow, request.user.email, 'review'),)
+            self.__acl__.append((Allow, request.user.email, 'review'))
+            if self.group.state in PRIVATE:
+                self.__acl__.append((Allow, request.user.email, 'edit'))
+
+        if self.is_member:
+            self.__acl__.append((Allow, request.user.email, 'view'))
+
+        if self.group.state not in PRIVATE:
+            self.__acl__.append((Allow, 'group:activated_users', 'view'))
 
     def _get_state(self):
         return self.group.state
@@ -33,6 +41,14 @@ class GroupContext(views.Context):
         self.group.state = value
 
     state = property(fget=_get_state, fset=_set_state)
+
+    def _get_membership_state(self):
+        return self.group_membership.state
+
+    def _set_membership_state(self, value):
+        self.group_membership.state = value
+
+    membership_state = property(fget=_get_membership_state, fset=_set_membership_state)
 
     @property
     def group(self):
@@ -45,13 +61,20 @@ class GroupContext(views.Context):
         return group
 
     @property
+    def group_membership(self):
+        group_id = self.group.id
+        email = self.request.matchdict.get('email')
+        try:
+            membership = DBSession().query(GroupMember).get((group_id, email))
+        except SQLAlchemyError:
+            raise HTTPNotFound
+        if not membership:
+            raise HTTPNotFound
+        return membership
+
+    @property
     def state_css(self):
-        if self.state == 'aktywna':
-            return 'label label-success'
-        elif self.state == 'zablokowana':
-            return 'label label-important'
-        else:
-            return 'label'
+        return self.group.state_css
 
     @property
     def states(self):
@@ -196,6 +219,21 @@ def change_group_state(context, request):
         return HTTPFound(location='/groups/%s' % context.group.id)
     request.session.flash({'title': u'Gotowe!', 'body': u'Status grupy został uaktualniony.'}, queue='success')
     return HTTPFound(location='/groups/%s' % context.group.id)
+
+
+@view_config(route_name='wf_groupmembership', permission='edit', request_param='destination')
+def change_groupmembership_state(context, request):
+    try:
+        wf = get_workflow(context.group_membership, 'GroupMembershipWorkflow')
+    except WorkflowError:
+        raise HTTPNotFound
+    try:
+        wf.transition_to_state(context, request, request.params.get('destination'), skip_same=False)
+    except WorkflowError:
+        request.session.flash({'title': u'Błąd!', 'body': u'Nie udało się zmienić statusu.'}, queue='error')
+        return HTTPFound(location='/groups/%s/manage_group_members' % context.group.id)
+    request.session.flash({'title': u'Gotowe!', 'body': u'Status użytkownika został uaktualniony.'}, queue='success')
+    return HTTPFound(location='/groups/%s/manage_group_members' % context.group.id)
 
 
 @view_config(route_name='join_group', permission='view')

@@ -127,11 +127,21 @@ group_books = Table("group_books", Base.metadata,
 
 
 class GroupMember(Base):
+    implements(interfaces.IGroupMembership)
+
     __tablename__ = "group_members"
     group_id = Column(Integer, ForeignKey('groups.id'), primary_key=True)
     user_id = Column(String, ForeignKey('users.email'), primary_key=True)
     membership = Column(String(128))
     user = relationship(User, uselist=False, backref='groups')
+    state = Column(String(64), default='nieaktywny')
+
+    @property
+    def state_css(self):
+        if self.state == 'aktywny':
+            return 'btn-success'
+        else:
+            return 'btn-danger'
 
 
 class Group(Base):
@@ -169,4 +179,15 @@ class Group(Base):
             return
         group_membership = GroupMember(membership=membership)
         group_membership.user = user
+        if membership == 'owner':
+            group_membership.state = u'aktywny'
         self.members.append(group_membership)
+
+    @property
+    def state_css(self):
+        if self.state == 'aktywna':
+            return 'label label-success'
+        elif self.state == 'zablokowana':
+            return 'label label-important'
+        else:
+            return 'label'

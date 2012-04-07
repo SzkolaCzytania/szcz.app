@@ -13,7 +13,7 @@ def groupfinder(userid, request):
     roles = []
     if request.user and request.user.isActivated():
         roles.append('group:activated_users')
-    if userid == u'a@mleczko.net':
+    if userid == u'andrew@mleczko.net':
         roles.append('group:administrator')
     return roles
 

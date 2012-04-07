@@ -72,7 +72,7 @@
                     <li class="${request.matched_route.name == 'list_groups' and 'active'}">
                         <a href="/groups">
                             <i class="icon-th"></i>
-                            Wszystkie grupy
+                            Wszystkie aktywne grupy
                         </a>
                     </li>
                   </ul>
