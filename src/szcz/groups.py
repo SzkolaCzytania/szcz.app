@@ -131,7 +131,7 @@ def send_activation(content, info):
                       sender=u"andrew@mleczko.net",
                       recipients=["andrew@mleczko.net"],
                       body=u"Grupa do aktywacji: %s/groups/%s" % (content.request.application_url, content.group.id))
-    mailer.send(message)
+    mailer.send_to_queue(message)
 
 
 def acept(content, info):
@@ -147,7 +147,7 @@ def send_aceptation(content, info):
                       sender=u"andrew@mleczko.net",
                       recipients=["andrew@mleczko.net"],
                       body=u"Grupa została zmieniona: %s/groups/%s" % (content.request.application_url, content.group.id))
-    mailer.send(message)
+    mailer.send_to_queue(message)
 
 
 @view_config(route_name='list_groups', renderer='templates/list_groups.pt', permission='view')

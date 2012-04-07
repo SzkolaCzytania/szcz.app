@@ -23,6 +23,7 @@ pyramid.includes = pyramid_tm
 sqlalchemy.url = postgresql://postgres:${conf:postgres_pass}@localhost/szcz
 mail.host = localhost
 mail.port = 25
+mail.queue_path = ${buildout:directory}/var/mails-queue
 
 session.type = file
 session.data_dir = %(here)s/data/sessions/data
