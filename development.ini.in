@@ -1,8 +1,4 @@
 [app:main]
-use = egg:Paste#urlmap
-/ = szcz
-
-[app:szcz]
 use = egg:szcz
 
 pyramid.reload_templates = true
@@ -31,10 +27,12 @@ velruse.store = velruse.store.sqlstore.SQLStore
 velruse.store.url = postgresql://postgres:postgres@localhost/szcz
 velruse.openid.store = openid.store.memstore.MemoryStore
 velruse.openid.realm = ${conf:domain}
-velruse.facebook.app_id = ${conf:facebook_app_id}
-velruse.facebook.app_secret = ${conf:facebook_app_secret}
-velruse.twitter.consumer_key = ${conf:twitter_consumer_key}
-velruse.twitter.consumer_secret = ${conf:twitter_consumer_secret}
+google.consumer_key = ${conf:google_consumer_key}
+google.consumer_secret = ${conf:google_consumer_secret}
+facebook.consumer_key = ${conf:facebook_consumer_key}
+facebook.consumer_secret = ${conf:facebook_consumer_secret}
+twitter.consumer_key = ${conf:twitter_consumer_key}
+twitter.consumer_secret = ${conf:twitter_consumer_secret}
 
 [server:main]
 use = egg:waitress#main

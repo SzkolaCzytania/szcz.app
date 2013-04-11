@@ -34,9 +34,12 @@ def main(global_config, **settings):
     config.set_request_property('szcz.security.get_user', name='user', reify=True)
 
     config.include('pyramid_fanstatic')
-    config.include('velruse.providers.google')
+    config.include('velruse.providers.google_oauth2')
+    config.add_google_oauth2_login_from_settings(prefix='google.')
     config.include('velruse.providers.facebook')
+    config.add_facebook_login_from_settings(prefix='facebook.')
     config.include('velruse.providers.twitter')
+    config.add_twitter_login_from_settings(prefix='twitter.')
     config.include('pyramid_beaker')
     config.include('deform_bootstrap')
     config.include('pyramid_mailer')

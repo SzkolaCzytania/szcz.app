@@ -20,18 +20,14 @@
                 <p>Możesz to uczynić na kilka sposobów. Jeżeli nie masz jeszcze konta, zostanie ono automatycznie utworzone.</p>
               </div>
               <div class="modal-footer">
-                <form id="facebook" action="${request.application_url}/facebook/login" method="post">
+                <form id="facebook" action="${login_url(request, 'facebook')}" method="post">
                   <input type="hidden" name="scope" value="email" />
                 </form>
-                <form id="twitter" action="${request.application_url}/twitter/login" method="post">
+                <form id="twitter" action="${login_url(request, 'twitter')}" method="post">
                 </form>
-                <form id="google" action="${request.application_url}/google/login" method="post">
-                  <input type="hidden" name="popup_mode" value="popup">
-                  <input type="hidden" name="openid.mode" value="checkid_immediate">
-                  <input type="hidden" name="openid.ns" value="http://specs.openid.net/auth/2.0">
-                  <input type="hidden" name="openid.claimed_id" value="http://specs.openid.net/auth/2.0/identifier_select">
-                  <input type="hidden" name="openid.identity" value="http://specs.openid.net/auth/2.0/identifier_select">
-                  <input type="hidden" name="openid.return_to" value="${request.application_url}/login">
+                <form id="google" action="${login_url(request, 'google')}" method="post">
+                  <input type="hidden" name="use_popup" value="false">
+                  <input type="hidden" name="openid_identifier" value="google.com">
                 </form>
                   <button id="facebook-button" type="submit" class="btn btn-primary">
                     <i class="icon-off icon-white"></i>

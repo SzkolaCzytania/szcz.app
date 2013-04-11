@@ -5,6 +5,7 @@ from pyramid.security import remember, forget
 from pyramid.security import unauthenticated_userid
 from pyramid.renderers import get_renderer, render
 from pyramid.response import Response
+from velruse import login_url
 from szcz.models import User
 from szcz import DBSession
 
@@ -27,12 +28,14 @@ def get_user(request):
 @view_config(context='pyramid.httpexceptions.HTTPUnauthorized', renderer='templates/login_form.pt')
 def login_form(request):
     return {'request': request,
+            'login_url': login_url,
             'main':  get_renderer('templates/master.pt').implementation()}
 
 
 @view_config(context='pyramid.httpexceptions.HTTPForbidden')
 def forbidden(context, request):
     values = {'request': request,
+              'login_url': login_url,
               'main':  get_renderer('templates/master.pt').implementation()}
     if request.user:
         result = render('templates/forbidden.pt', values)
@@ -51,7 +54,7 @@ def logout(request):
     return HTTPFound(location='/', headers=headers)
 
 
-@view_config(context='velruse.api.AuthenticationComplete')
+@view_config(context='velruse.AuthenticationComplete')
 def velruse_complete(context, request):
     email = context.profile.get('verifiedEmail')
     user = DBSession.query(User).get(email)
@@ -69,7 +72,7 @@ def velruse_complete(context, request):
     return HTTPFound(location='/', headers=headers)
 
 
-@view_config(context='velruse.exceptions.AuthenticationDenied')
+@view_config(context='velruse.AuthenticationDenied')
 def velruse_rejected(context, request):
     request.session.flash({'title': u'Brak autoryzacji',
                             'body': u'Nie zostałeś poprawnie zautoryzowany przez profil zewnętrzny.'},
