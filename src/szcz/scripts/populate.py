@@ -24,7 +24,7 @@ def main(argv=sys.argv):
         usage(argv)
     config_uri = argv[1]
     setup_logging(config_uri)
-    settings = get_appsettings(config_uri, name='szcz')
+    settings = get_appsettings(config_uri, name='main')
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine

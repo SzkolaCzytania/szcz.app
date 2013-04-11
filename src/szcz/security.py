@@ -61,8 +61,13 @@ def velruse_complete(context, request):
 
     if not user:
         session = DBSession()
-        user = User(given_name=context.profile['name']['givenName'],
-                    family_name=context.profile['name']['familyName'],
+        try:
+            given_name, family_name = context.profile['displayName'].split(' ')
+        except ValueError:
+            given_name = context.profile['displayName']
+            family_name = context.profile['displayName']
+        user = User(given_name=given_name,
+                    family_name=family_name,
                     email=context.profile.get('verifiedEmail'))
         session.add(user)
         headers = remember(request, user.email)
