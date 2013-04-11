@@ -141,11 +141,13 @@ def deferred_activation_validator(node, kw):
 
 
 class GroupSchema(colander.Schema):
-    name = colander.SchemaNode(colander.String(), title=u'Nazwa')
+    name = colander.SchemaNode(colander.String(), title=u'Nazwa',
+                               description='Pełna nazwa grupy')
     address = colander.SchemaNode(colander.String(), title=u'Adres')
     zip_code = colander.SchemaNode(colander.String(), title=u'Kod pocztowy')
     city = colander.SchemaNode(colander.String(), title=u'Miejscowość')
     end_date = colander.SchemaNode(colander.Date(),
+                                   description='Minimum 1 miesiąc, maksymalnie 1 rok.',
                                    validator=colander.Range(min=(datetime.date.today() + datetime.timedelta(30)),
                                                             max=(datetime.date.today() + datetime.timedelta(365))),
                                    title=u'Data ważności grupy')

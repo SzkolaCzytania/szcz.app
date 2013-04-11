@@ -11,18 +11,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
-    <div id="body-wrapper">
-      <!-- navbar -->
-      <div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-          <div class="container-fluid">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+
+   <div class="navbar-wrapper">
+      <!-- Wrap the .navbar in .container to center it within the absolutely positioned parent. -->
+      <div class="container">
+
+        <div class="navbar navbar-inverse">
+          <div class="navbar-inner">
+            <!-- Responsive Navbar Part 1: Button for triggering responsive navbar (not covered in tutorial). Include responsive CSS to utilize. -->
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
-            </a>
+            </button>
             <a class="brand" href="/"><img src="/fanstatic/szcz/img/logo_mini.png"></a>
-            <div class="nav-collapse" tal:condition="request.user">
+            <div class="nav-collapse collapse" tal:condition="request.user">
               <ul class="nav pull-right">
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -41,13 +44,13 @@
                   </ul>
                 </li>
               </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- end navbar -->
-      <div id="visual-portal-wrapper">
-        <div class="container-fluid" id="container-wrap">
+            </div><!--/.nav-collapse -->
+          </div><!-- /.navbar-inner -->
+        </div><!-- /.navbar -->
+      </div> <!-- /.container -->
+    </div>
+
+    <div class="container marketing">
 
           <div class="row-fluid">
             <metal:sidebar define-slot="sidebar">
@@ -127,20 +130,10 @@
             <div class="span12" tal:condition="not request.user">
               <metal:container define-slot="container"/>
             </div>
-          </div>
         </div> <!-- /container -->
-      </div>
-      <div class="push"></div>
-    </div>
-    <div id="footer">
-        <div class="borderFooter"><hr></div>
-        <div class="container-fluid">
-          <div class="row-fluid">
             <div class="copyright">
                  All rights reserved by Szkoła Czytania.
             </div>
-          </div>
-        </div>
       </div>
   </body>
 </html>
