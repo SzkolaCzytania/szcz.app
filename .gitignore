@@ -1,6 +1,7 @@
 parts
 develop-eggs
 bin
+buildout.cfg
 eggs
 .installed.cfg
 .mr.developer.cfg
