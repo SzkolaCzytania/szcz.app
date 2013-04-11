@@ -10,7 +10,6 @@ requires = [
     'pyramid',
     'pyramid_zcml',
     'pyramid_mailer',
-    'repoze.bitblt',
     'SQLAlchemy',
     'psycopg2',
     'transaction',

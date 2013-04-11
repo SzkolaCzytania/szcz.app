@@ -1,14 +1,6 @@
 [app:main]
 use = egg:Paste#urlmap
-/ = middlewares
-
-[pipeline:middlewares]
-pipeline = thumbs szcz
-
-[filter:thumbs]
-use = egg:repoze.bitblt#bitblt
-secret = fasfsaf
-try_xhtml = True
+/ = szcz
 
 [app:szcz]
 use = egg:szcz
@@ -47,7 +39,7 @@ velruse.twitter.consumer_secret = ${conf:twitter_consumer_secret}
 [server:main]
 use = egg:waitress#main
 host = 0.0.0.0
-port = 6543
+port = 80
 
 # Begin logging configuration
 
