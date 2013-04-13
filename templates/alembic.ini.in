@@ -2,7 +2,7 @@
 
 [alembic]
 script_location = %(here)s/alembic
-sqlalchemy.url = postgresql://postgres:postgres@localhost/szcz
+sqlalchemy.url = ${conf:sql}
 
 # Logging configuration
 [loggers]

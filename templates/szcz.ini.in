@@ -9,9 +9,9 @@ pyramid.debug_templates = true
 pyramid.default_locale_name = pl
 pyramid_deform.tempdir = /tmp/
 pyramid.includes = pyramid_debugtoolbar pyramid_tm
-sqlalchemy.url = postgresql://postgres:postgres@localhost/szcz
+sqlalchemy.url = ${conf:sql}
 mail.host = localhost
-mail.port = 8025
+mail.port = 25
 mail.queue_path = ${buildout:directory}/var/mails-queue
 
 session.type = file
@@ -25,7 +25,7 @@ fanstatic.bottom = true
 fanstatic.debug = true
 
 velruse.store = velruse.store.sqlstore.SQLStore
-velruse.store.url = postgresql://postgres:postgres@localhost/szcz
+velruse.store.url = ${conf:sql}
 velruse.openid.store = openid.store.memstore.MemoryStore
 velruse.openid.realm = ${conf:domain}
 google.consumer_key = ${conf:google_consumer_key}
