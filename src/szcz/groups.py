@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from pyramid.threadlocal import get_current_registry
 from pyramid.view import view_config
 from pyramid.renderers import get_renderer
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
@@ -150,11 +151,14 @@ def activate(content, info):
 
 def send_activation(content, info):
     mailer = get_mailer(content.request)
-    message = Message(subject=u"Prośba o aktywację grupy",
-                      sender=u"andrew@mleczko.net",
-                      recipients=["andrew@mleczko.net"],
-                      body=u"Grupa do aktywacji: %s/groups/%s" % (content.request.application_url, content.group.id))
-    mailer.send_to_queue(message)
+    settings = get_current_registry().settings
+    admins = settings.get('szcz.admins').split(',')
+    message = Message(subject=u"Prośba o aktywację nowej grupy",
+                      recipients=admins,
+                      html=u"<a href='%s/groups/%s/edit'>Aktywuj %s</a>" % (content.request.application_url, content.group.id, content.group.name),
+                      extra_headers={'X-MC-Template': 'activation-requeset',
+                                     'X-MC-MergeVars': '{"MAIN": "%s/groups/%s/edit"}' % (content.request.application_url, content.group.id)})
+    mailer.send(message)
 
 
 def acept(content, info):
@@ -166,11 +170,14 @@ def acept(content, info):
 
 def send_aceptation(content, info):
     mailer = get_mailer(content.request)
-    message = Message(subject=u"Prośba o akceptację grupy",
-                      sender=u"andrew@mleczko.net",
-                      recipients=["andrew@mleczko.net"],
-                      body=u"Grupa została zmieniona: %s/groups/%s" % (content.request.application_url, content.group.id))
-    mailer.send_to_queue(message)
+    settings = get_current_registry().settings
+    admins = settings.get('szcz.admins').split(',')
+    message = Message(subject=u"Prośba o akceptację zmian grupy",
+                      recipients=admins,
+                      html=u"<a href='%s/groups/%s'>%s</a>" % (content.request.application_url, content.group.id, content.group.name),
+                      extra_headers={'X-MC-Template': 'accept-group-changed',
+                                     'X-MC-MergeVars': '{"MAIN": "%s/groups/%s"}' % (content.request.application_url, content.group.id)})
+    mailer.send(message)
 
 
 @view_config(route_name='list_groups', renderer='templates/list_groups.pt', permission='view')

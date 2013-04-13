@@ -43,6 +43,8 @@ def main(global_config, **settings):
     config.add_twitter_login_from_settings(prefix='twitter.')
     config.include('pyramid_beaker')
     config.include('deform_bootstrap')
+    config.include('js.deform_bootstrap')
+
     config.include('pyramid_mailer')
     config.include('pyramid_deform')
     config.include('pyramid_zcml')
@@ -56,6 +58,7 @@ def main(global_config, **settings):
         return get_localizer(get_current_request()).translate(term)
     Form.set_zpt_renderer(search_path, translator=translator)
 
+    config.add_route('favicon', '/favicon.ico')
     config.add_route('home', '/')
     config.add_route('logout', '/logout')
     config.add_route('userprofile', '/profile')

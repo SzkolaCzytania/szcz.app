@@ -1,7 +1,9 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*
+import json
 import deform
 import colander
 import datetime
+import js.deform
 
 from pyramid.view import view_config
 from pyramid_deform import SessionFileUploadTempStore
@@ -10,7 +12,6 @@ from pyramid_mailer.message import Message
 from pyramid.renderers import get_renderer
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
-from fanstaticdeform import deform_resource
 from sqlalchemy.exc import SQLAlchemyError
 from szcz.models import Group, File
 from szcz import DBSession
@@ -70,7 +71,7 @@ def userprofile(context, request):
     user = request.user
     schema = UserSchema().bind(request=request)
     form = deform.Form(schema, buttons=('zapisz', 'anuluj'), css_class=u'form-horizontal')
-    deform_resource.needsFor(form)
+    js.deform.auto_need(form)
     form['terms'].widget.template = 'szcz_terms'
 
     if request.POST:
@@ -140,14 +141,13 @@ class GroupSchema(colander.Schema):
                                           validator=deferred_activation_validator,
                                           title=u'Kod aktywacyjny')
 
+class Emails(colander.SequenceSchema):
+    email = colander.SchemaNode(colander.String(),
+                                title = u'adres email',
+                                validator=colander.Email())
 
 class ManageGroupMembers(colander.Schema):
-
-    class Sequence(colander.SequenceSchema):
-        email = colander.SchemaNode(colander.String(),
-                                    title = u'adres email',
-                                    validator=colander.Email())
-    emails = Sequence(title=u'Adresy email')
+    emails = Emails(title=u'Adresy email')
 
 
 def maybe_remove_fields(node, kw):
@@ -170,12 +170,12 @@ def manage_group_members(context, request):
         raise HTTPNotFound
 
     schema = ManageGroupMembers().bind(request=request, group=group)
-    form = deform.Form(schema, buttons=(u'zaproś', 'anuluj'), css_class=u'')
+    form = deform.Form(schema, buttons=(u'zaproś', 'anuluj'))
     form['emails'].widget = deform.widget.SequenceWidget(min_len=1)
-    deform_resource.needsFor(form)
+    js.deform.auto_need(form)
 
     if request.POST:
-        if not u'zaproś' in request.POST:
+        if not 'zaproś' in request.POST:
             return HTTPFound(location='/groups/%s' % group.id)
         items = request.POST.items()
         try:
@@ -186,18 +186,20 @@ def manage_group_members(context, request):
                     'group': group,
                     'main':  get_renderer('templates/master.pt').implementation()}
 
-
         emails = set(appstruct.get('emails'))
         user = request.user
-        for email in emails:
-            mailer = get_mailer(request)
-            message = Message(subject=u"Prośba o dołączenie do grupy %s" % group.name,
-                              sender=user.email,
-                              recipients=["%s" % email],
-                              body=u"""%s chce abyś dołączył do grupy %s w serwisie Szkoła Czytania.
-Aby zaakceptować zaproszenie przejdź do adresu: %s/groups/%s/join""" % (
-                                        user.fullname, group.name, request.application_url, group.id))
-            mailer.send_to_queue(message)
+        mailer = get_mailer(request)
+        headers = {"fullname": user.fullname,
+                   "groupname": group.name,
+                   "link": "%s/groups/%s/join" % (request.application_url, group.id)}
+
+        message = Message(subject=u"Prośba o dołączenie do grupy %s" % group.name,
+                          recipients=emails,
+                          body = u'Zaproszenie',
+                          extra_headers={'X-MC-Template': 'invite-friend',
+                          #               'X-MC-PreserveRecipients': 'false',
+                                         'X-MC-MergeVars': json.dumps(headers)})
+        mailer.send(message)
 
         request.session.flash({'title': u'Gotowe!',
                                'body': u'Zaproszenia zostały wysłane do: %s' % (','.join(emails))},
@@ -226,8 +228,8 @@ def edit_group(context, request):
         is_new = True
 
     schema = GroupSchema(after_bind=maybe_remove_fields).bind(request=request, group=group)
-    form = deform.Form(schema, buttons=('zapisz', 'anuluj'), css_class=u'form-horizontal')
-    deform_resource.needsFor(form)
+    form = deform.Form(schema, buttons=('zapisz', 'anuluj'), css_class=u'form-horizontal', requirements = ( ('bootstrap', None), ))
+    js.deform.auto_need(form)
 
     if request.POST:
         if not 'zapisz' in request.POST:

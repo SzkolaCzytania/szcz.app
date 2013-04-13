@@ -43,11 +43,6 @@
 
                 <h3>Zaproś nowe osoby</h3>  
                 <tal:form replace="structure form"/>
-                <script type="text/javascript">
-                        jQuery(function() {
-                              deform.load();
-                        });
-                </script>
 
       </div>
 

@@ -25,8 +25,10 @@ requires = [
     'pyramid_beaker',
     'deform_bootstrap',
     'deform',
-    'fanstaticdeform',
+    #'fanstaticdeform',
+    'js.deform',
     'js.jquery_datatables',
+    'js.deform_bootstrap',
     'repoze.workflow',
     ]
 
@@ -54,7 +56,6 @@ setup(name='szcz',
       main = szcz:main
       [console_scripts]
       populate_szcz = szcz.scripts.populate:main
-      pserve-fanstatic = szcz.resources:pserve
       # Fanstatic resource library
       [fanstatic.libraries]
       szcz = szcz.resources:library

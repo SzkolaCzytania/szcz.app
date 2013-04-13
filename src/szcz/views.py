@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
+from pyramid.response import FileResponse
 from pyramid.view import view_config
 from pyramid.renderers import get_renderer
 from pyramid.httpexceptions import HTTPNotFound
@@ -21,6 +23,12 @@ class Context(object):
     def __init__(self, request):
         szcz.need()
         self.request = request
+
+@view_config(route_name='favicon')
+def favicon_view(request):
+    here = os.path.dirname(__file__)
+    icon = os.path.join(here, 'resources/img/', 'favicon.ico')
+    return FileResponse(icon, request=request)
 
 
 @view_config(context='pyramid.httpexceptions.HTTPNotFound', renderer='templates/notfound.pt')
