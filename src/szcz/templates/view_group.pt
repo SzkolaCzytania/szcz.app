@@ -9,7 +9,7 @@
 
           <metal:group_nav use-macro="group_nav.macros['nav']" />
 
-          <a tal:condition="group.logo" class="lightbox" href="/groups/${group.id}/logo_view"><img src="/groups/${group.id}/logo_view" height="100"/></a>
+          <a tal:condition="group.logo" class="lightbox" href="/groups/${group.id}/logo_view"><img src="/groups/${group.id}/logo_view" style="height:100px"/></a>
           <h2>${group.name}</h2>
 
           <div class="row-fluid">

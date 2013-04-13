@@ -15,6 +15,7 @@ requires = [
     'transaction',
     'pyramid_tm',
     'pyramid_debugtoolbar',
+    'pyramid_deform',
     'zope.sqlalchemy',
     'waitress',
     'velruse',

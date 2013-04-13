@@ -43,6 +43,7 @@ def main(global_config, **settings):
     config.include('pyramid_beaker')
     config.include('deform_bootstrap')
     config.include('pyramid_mailer')
+    config.include('pyramid_deform')
     config.include('pyramid_zcml')
 
     deform_templates = resource_filename('deform', 'templates')

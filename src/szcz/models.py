@@ -5,9 +5,20 @@ import uuid
 from szcz import Base, interfaces
 
 
+class File(Base):
+    __tablename__ = 'related_files'
+    id = Column('id', Integer, primary_key=True)
+    data = Column(LargeBinary())
+    filename = Column(Unicode(100))
+    mimetype = Column(String(100))
+    size = Column(Integer())
+
+
 class User(Base):
     __tablename__ = 'users'
     email = Column(String, primary_key=True)
+    profile_id = Column(Integer, ForeignKey('related_files.id'))
+    profile = relationship(File, uselist=False)
     given_name = Column(Text)
     family_name = Column(Text)
     address = Column(Text)
@@ -34,15 +45,6 @@ class User(Base):
             return True
         else:
             return False
-
-
-class File(Base):
-    __tablename__ = 'related_files'
-    id = Column('id', Integer, primary_key=True)
-    data = Column(LargeBinary())
-    filename = Column(Unicode(100))
-    mimetype = Column(String(100))
-    size = Column(Integer())
 
 
 relations = Table("relations", Base.metadata,

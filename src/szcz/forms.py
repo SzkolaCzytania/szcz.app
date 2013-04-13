@@ -3,8 +3,8 @@ import deform
 import colander
 import datetime
 
-from cStringIO import StringIO
 from pyramid.view import view_config
+from pyramid_deform import SessionFileUploadTempStore
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
 from pyramid.renderers import get_renderer
@@ -12,12 +12,18 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from fanstaticdeform import deform_resource
 from sqlalchemy.exc import SQLAlchemyError
-from szcz.models import Group  # , File
+from szcz.models import Group, File
 from szcz import DBSession
 
 
 def record_to_appstruct(self):
     return dict([(k, self.__dict__[k]) for k in sorted(self.__dict__) if '_sa_' != k[:4] and self.__dict__[k] != None])
+
+
+def filesize_validator(node, value):
+    value['fp'].seek(0,2)
+    if value['fp'].tell() > 50*1024:
+        raise colander.Invalid(node, u'Maksymalny rozmiar pliku to 50kB.')
 
 
 def merge_session_with_post(session, post):
@@ -28,51 +34,10 @@ def merge_session_with_post(session, post):
     return session
 
 
-class FileUploadTempStore(object):
-
-    def __init__(self, request):
-        self.request = request
-        self.session = request.session
-
-    def __setitem__(self, name, value):
-        pickleable = value.copy()
-        fp = pickleable.get('fp', None)
-        if fp is not None:
-            pickleable['fp'] = fp.read()
-        return self.session.__setitem__(name, pickleable)
-
-    def __getitem__(self, name):
-        if name in self.session:
-            sessiondata = self.session['name']
-            filedata = {}
-            for (key, value) in sessiondata:
-                if ((key == 'fp') and (value is not None)):
-                    # translate the file data back into a file
-                    # like object
-                    value = StringIO(value)
-                    filedata[key] = value
-            return filedata
-        raise KeyError('"%s" not in session' % name)
-
-    def __delitem__(self, name):
-        del self.session[name]
-
-    def __contains__(self, name):
-        return (name in self.session)
-
-    def get(self, name, default=None):
-        try:
-            self.__getitem__(name)
-        except:
-            return default
-
-    def preview_url(self, name):
-        return None
-
-
 @colander.deferred
-def deferred_fileupload_widget(node, kw):
-    tmpstore = FileUploadTempStore(kw['request'])
+def upload_widget(node, kw):
+    request = kw['request']
+    tmpstore = SessionFileUploadTempStore(request)
     return deform.widget.FileUploadWidget(tmpstore)
 
 
@@ -82,6 +47,9 @@ class UserSchema(colander.Schema):
 
     given_name = colander.SchemaNode(colander.String(), title=u'Imię')
     family_name = colander.SchemaNode(colander.String(), title=u'Nazwisko')
+    profile = colander.SchemaNode(deform.schema.FileData(), title=u'Zdjęcie',
+                                  validator = filesize_validator,
+                                  widget = upload_widget,)
     address = colander.SchemaNode(colander.String(),
                                   widget=deform.widget.TextAreaWidget(rows=4, cols=60),
                                   title=u'Adres pocztowy')
@@ -99,7 +67,7 @@ class UserSchema(colander.Schema):
 @view_config(route_name='userprofile', renderer='templates/userprofile.pt', permission='user_profile')
 def userprofile(context, request):
     user = request.user
-    schema = UserSchema()
+    schema = UserSchema().bind(request=request)
     form = deform.Form(schema, buttons=('zapisz', 'anuluj'), css_class=u'form-horizontal')
     deform_resource.needsFor(form)
     form['terms'].widget.template = 'szcz_terms'
@@ -114,6 +82,16 @@ def userprofile(context, request):
         except deform.ValidationFailure, e:
             return {'form': e.render(),
                     'main':  get_renderer('templates/master.pt').implementation()}
+
+        profile = File()
+        profile.filename = appstruct['profile']['filename']
+        profile.mimetype = appstruct['profile']['mimetype']
+        appstruct['profile']['fp'].seek(0)
+        profile.data = appstruct['profile']['fp'].read()
+        appstruct['profile']['fp'].seek(0,2)
+        profile.size = appstruct['profile']['fp'].tell()
+        appstruct['profile']['fp'].close()
+        appstruct['profile'] = profile
 
         user = merge_session_with_post(user, appstruct)
         request.session.flash({'title': u'Gotowe!',
@@ -143,6 +121,10 @@ def deferred_activation_validator(node, kw):
 class GroupSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(), title=u'Nazwa',
                                description='Pełna nazwa grupy')
+    logo = colander.SchemaNode(deform.schema.FileData(), title=u'Logo',
+                               validator = filesize_validator,
+                               widget = upload_widget,)
+
     address = colander.SchemaNode(colander.String(), title=u'Adres')
     zip_code = colander.SchemaNode(colander.String(), title=u'Kod pocztowy')
     city = colander.SchemaNode(colander.String(), title=u'Miejscowość')
@@ -256,6 +238,15 @@ def edit_group(context, request):
                     'group': group,
                     'main':  get_renderer('templates/master.pt').implementation()}
 
+        logo = File()
+        logo.filename = appstruct['logo']['filename']
+        logo.mimetype = appstruct['logo']['mimetype']
+        appstruct['logo']['fp'].seek(0)
+        logo.data = appstruct['logo']['fp'].read()
+        appstruct['logo']['fp'].seek(0,2)
+        logo.size = appstruct['logo']['fp'].tell()
+        appstruct['logo']['fp'].close()
+        appstruct['logo'] = logo
         if 'activation_code' in request.POST:
             group.state = u'aktywna'
             request.session.flash({'title': u'Gotowe!',
