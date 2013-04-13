@@ -59,6 +59,9 @@ def forbidden(context, request):
 @view_config(route_name='logout')
 def logout(request):
     headers = forget(request)
+    request.session.flash({'title': u'Wylogowany',
+                           'body': u'Zostałeś prawidłowo wylogowany z aplikcaji. Zapraszamy ponownie.'},
+                           queue='success')
     return HTTPFound(location='/', headers=headers)
 
 
@@ -79,8 +82,14 @@ def velruse_complete(context, request):
                     email=context.profile.get('verifiedEmail'))
         session.add(user)
         headers = remember(request, user.email)
+        request.session.flash({'title': u'Zarejestrowany',
+                               'body': u'Witamy w Szkole Czytania. Twoje konto zostało utworzone.'},
+                               queue='success')
         return HTTPFound(location='/profile', headers=headers)
 
+    request.session.flash({'title': u'Zalogowany',
+                           'body': u'Witamy w Szkole Czytania!'},
+                           queue='success')
     headers = remember(request, user.email)
     return HTTPFound(location='/', headers=headers)
 

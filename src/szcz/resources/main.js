@@ -7,4 +7,5 @@ $(document).ready(function() {
     imageBtnNext: '/fanstatic/lightbox/img/lightbox-btn-next.gif',
     imageBlank: '/fanstatic/lightbox/img/lightbox-blank.gif',
    });
+   $.pnotify.defaults.history = false;
 });

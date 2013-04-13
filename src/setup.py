@@ -30,6 +30,7 @@ requires = [
     'js.jquery_datatables',
     'js.deform_bootstrap',
     'repoze.workflow',
+    'js.modernizr'
     ]
 
 setup(name='szcz',
