@@ -1,0 +1,61 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:tal="http://xml.zope.org/namespaces/tal"
+       xmlns:metal="http://xml.zope.org/namespaces/metal"
+       metal:use-macro="main.macros['main']">
+
+       <metal:sidebar fill-slot="sidebar">
+        <div class="span2">
+         &nbsp;
+       </div>
+
+       </metal:sidebar>
+     <metal:container fill-slot="well">
+
+
+          <metal:group_nav use-macro="group_nav.macros['nav']" />
+
+          <code>Początek druku</code>
+          <hr>
+
+
+          <div class="row-fluid" id="printable">
+            <div class="span8">
+              <h3>Witamy w Szkole Czytania!</h3>
+              <address>
+                <strong>${group.get_owner().fullname}</strong><br>
+                <span tal:replace="structure group.printable_address"/>
+                </address>
+                <p>Tutaj znajdzie się zajawka dla nowych użytkowników z inormacją co mają zrobić,
+                żeby aktywować grupę w Szkole Czytania. Najważniejszy jest kod aktywacyjny:</p>
+                <p class="text-center"><code>${group.activation}</code></p>
+                <p>który musi zostać podany w formularzu, dostępnym pod adresem:
+                <strong>${request.route_url('edit_group',id=group.id)}</strong>.
+                Jeżeli masz czytnik kodów QR Code - możesz aktywować grupę automatycznie
+                korzystając z obrazku obok.
+                </p>
+                <p>&nbsp;</p>
+                <blockquote class="pull-right">
+                    <p>"Amor librorum nos unit".</p>
+                    <small>Zespół Szkoły Czytania</small>
+                </blockquote>
+            </div>
+            <div class="span4">
+              <img class="thumbnail" src="https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=${request.route_url('edit_group',id=group.id)}">
+            </div>
+          </div>
+          <hr>
+        <code>Koniec druku</code>
+        <p class="text-center">
+        <button class="btn btn-success print">Drukuj kartę</button>
+        <script>
+          $(function() {
+              $('.print').click(function() {
+                 $('#printable').printArea();
+                 return false;
+              });
+          });
+        </script>
+        </p>
+
+</metal:container>
+</html>

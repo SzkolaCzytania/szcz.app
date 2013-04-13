@@ -7,6 +7,7 @@
           <ul class="nav nav-pills">
             <li class="${request.matched_route.name == 'view_group' and 'active'}"> <a href="/groups/${group.id}">Widok</a></li>
             <li class="${request.matched_route.name == 'edit_group' and 'active'}" tal:condition="context.has_permission('edit')"><a href="/groups/${group.id}/edit">Edycja</a></li>
+            <li class="${request.matched_route.name == 'print_activation_group' and 'active'}" tal:condition="context.has_permission('print_activation')"><a href="/groups/${group.id}/print_activation">Kod aktywacyjny</a></li>
             <li class="${request.matched_route.name == 'manage_group_members' and 'active'}" tal:condition="context.has_permission('edit')"><a href="/groups/${group.id}/manage_group_members">Członkowie grupy</a></li>
             <li tal:condition="context.has_permission('review') and request.matched_route.name == 'view_group'" class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#">

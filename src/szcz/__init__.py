@@ -79,6 +79,7 @@ def main(global_config, **settings):
     config.add_route('wf_groupmembership', '/groups/{id:\d+}/member/{email}/change_state', factory='szcz.groups.GroupContext')
     config.add_route('view_group', '/groups/{id:\d+}', factory='szcz.groups.GroupContext')
     config.add_route('edit_group', '/groups/{id:\d+}/edit', factory='szcz.groups.GroupContext')
+    config.add_route('print_activation_group', '/groups/{id:\d+}/print_activation', factory='szcz.groups.GroupContext')
     config.add_route('manage_group_members', '/groups/{id:\d+}/manage_group_members', factory='szcz.groups.GroupContext')
 
     config.add_static_view('deform_static', 'deform:static')

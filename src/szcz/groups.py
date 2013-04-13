@@ -205,6 +205,14 @@ def view_group(context, request):
             'main': get_renderer('templates/master.pt').implementation()}
 
 
+@view_config(route_name='print_activation_group', renderer='templates/print_activation_group.pt', permission='print_activation')
+def print_activation_group(context, request):
+    return {'request': request,
+            'group': context.group,
+            'group_nav': get_renderer('templates/group_macros.pt').implementation(),
+            'main': get_renderer('templates/master.pt').implementation()}
+
+
 @view_config(route_name='logo_group', permission='view')
 def logo_group(context, request):
     logo = context.group.logo

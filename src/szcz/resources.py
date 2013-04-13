@@ -12,6 +12,7 @@ resource_mapping['modernizr'] = modernizr
 library = Library('szcz', 'resources')
 css_resource = Resource(library, 'main.css', depends=[bootstrap_responsive_css])
 js_resource = Resource(library, 'main.js', depends=[bootstrap_js, ui_datepicker_locales['pl']])
+print_js = Resource(library, 'print.js')
 paging = Resource(library, 'paging.js', depends=[jquery_datatables_js])
 
 szcz_datatables_js = Resource(library, 'szcz_datatables.js', depends=[jquery_datatables_js])
@@ -23,4 +24,4 @@ pnotify_icons = Resource(library, 'jquery.pnotify.default.icons.css')
 pnotify = Group([pnotify_js, pnotify_css, pnotify_icons])
 
 datatables = Group([paging, szcz_datatables_css, szcz_datatables_js])
-szcz = Group([css_resource, js_resource, lightbox, pnotify])
+szcz = Group([css_resource, js_resource, lightbox, pnotify, print_js])

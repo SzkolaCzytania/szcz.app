@@ -171,6 +171,10 @@ class Group(Base):
     def full_address(self):
         return "%s, %s %s" % (self.address, self.zip_code, self.city)
 
+    @property
+    def printable_address(self):
+        return "%s<br /> %s %s" % (self.address, self.zip_code, self.city)
+
     def add_book(self, book):
         if [b for b in self.books if b.content_id == book.content_id]:
             return
@@ -184,6 +188,9 @@ class Group(Base):
         if membership == 'owner':
             group_membership.state = u'aktywny'
         self.members.append(group_membership)
+
+    def get_owner(self):
+        return [m.user for m in self.members if m.membership == 'owner'][0]
 
     @property
     def state_css(self):

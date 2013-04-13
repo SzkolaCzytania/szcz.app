@@ -225,6 +225,7 @@ def edit_group(context, request):
             raise HTTPNotFound
     else:
         group = Group()
+        group.add_member(request.user, 'owner')
         is_new = True
 
     schema = GroupSchema(after_bind=maybe_remove_fields).bind(request=request, group=group)
@@ -261,7 +262,6 @@ def edit_group(context, request):
             return HTTPFound(location='/groups/%s' % group.id)
 
         group = merge_session_with_post(group, appstruct)
-        group.add_member(request.user, 'owner')
         session = DBSession()
         session.add(group)
         if is_new:
