@@ -32,6 +32,7 @@ def notfound(request):
 
 @view_config(route_name='home', renderer='templates/home.pt', permission='view')
 def home(context, request):
+    raise Exception('Dupa')
     return {'request': request,
             'main':  get_renderer('templates/master.pt').implementation()}
 

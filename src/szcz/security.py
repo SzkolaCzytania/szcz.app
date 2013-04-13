@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+from pyramid.threadlocal import get_current_registry
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import remember, forget
 from pyramid.security import unauthenticated_userid
+from pyramid.security import has_permission as allowed
 from pyramid.renderers import get_renderer, render
 from pyramid.response import Response
 from velruse import login_url
@@ -12,11 +14,17 @@ from szcz import DBSession
 
 def groupfinder(userid, request):
     roles = []
+    settings = get_current_registry().settings
     if request.user and request.user.isActivated():
         roles.append('group:activated_users')
-    if userid == u'andrew@mleczko.net':
+    admins = settings.get('szcz.admins').split(',')
+    if userid in admins:
         roles.append('group:administrator')
     return roles
+
+
+def has_permission(request, name, context):
+    return allowed(name, context, request)
 
 
 def get_user(request):

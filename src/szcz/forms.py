@@ -49,6 +49,7 @@ class UserSchema(colander.Schema):
     family_name = colander.SchemaNode(colander.String(), title=u'Nazwisko')
     profile = colander.SchemaNode(deform.schema.FileData(), title=u'Zdjęcie',
                                   validator = filesize_validator,
+                                  missing = None,
                                   widget = upload_widget,)
     address = colander.SchemaNode(colander.String(),
                                   widget=deform.widget.TextAreaWidget(rows=4, cols=60),
@@ -83,15 +84,16 @@ def userprofile(context, request):
             return {'form': e.render(),
                     'main':  get_renderer('templates/master.pt').implementation()}
 
-        profile = File()
-        profile.filename = appstruct['profile']['filename']
-        profile.mimetype = appstruct['profile']['mimetype']
-        appstruct['profile']['fp'].seek(0)
-        profile.data = appstruct['profile']['fp'].read()
-        appstruct['profile']['fp'].seek(0,2)
-        profile.size = appstruct['profile']['fp'].tell()
-        appstruct['profile']['fp'].close()
-        appstruct['profile'] = profile
+        if appstruct['profile']:
+            profile = File()
+            profile.filename = appstruct['profile']['filename']
+            profile.mimetype = appstruct['profile']['mimetype']
+            appstruct['profile']['fp'].seek(0)
+            profile.data = appstruct['profile']['fp'].read()
+            appstruct['profile']['fp'].seek(0,2)
+            profile.size = appstruct['profile']['fp'].tell()
+            appstruct['profile']['fp'].close()
+            appstruct['profile'] = profile
 
         user = merge_session_with_post(user, appstruct)
         request.session.flash({'title': u'Gotowe!',
@@ -123,6 +125,7 @@ class GroupSchema(colander.Schema):
                                description='Pełna nazwa grupy')
     logo = colander.SchemaNode(deform.schema.FileData(), title=u'Logo',
                                validator = filesize_validator,
+                               missing = None,
                                widget = upload_widget,)
 
     address = colander.SchemaNode(colander.String(), title=u'Adres')
@@ -238,15 +241,16 @@ def edit_group(context, request):
                     'group': group,
                     'main':  get_renderer('templates/master.pt').implementation()}
 
-        logo = File()
-        logo.filename = appstruct['logo']['filename']
-        logo.mimetype = appstruct['logo']['mimetype']
-        appstruct['logo']['fp'].seek(0)
-        logo.data = appstruct['logo']['fp'].read()
-        appstruct['logo']['fp'].seek(0,2)
-        logo.size = appstruct['logo']['fp'].tell()
-        appstruct['logo']['fp'].close()
-        appstruct['logo'] = logo
+        if appstruct['logo']:
+            logo = File()
+            logo.filename = appstruct['logo']['filename']
+            logo.mimetype = appstruct['logo']['mimetype']
+            appstruct['logo']['fp'].seek(0)
+            logo.data = appstruct['logo']['fp'].read()
+            appstruct['logo']['fp'].seek(0,2)
+            logo.size = appstruct['logo']['fp'].tell()
+            appstruct['logo']['fp'].close()
+            appstruct['logo'] = logo
         if 'activation_code' in request.POST:
             group.state = u'aktywna'
             request.session.flash({'title': u'Gotowe!',

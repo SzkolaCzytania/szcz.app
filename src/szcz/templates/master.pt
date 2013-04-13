@@ -32,7 +32,8 @@
                   <i class="icon-user icon-white"></i>
                   ${request.user.fullname}<b class="caret"></b>
                 </a>
-                  <ul class="dropdown-menu">
+                <ul class="dropdown-menu">
+                    <li class="nav-header" tal:condition="request.has_permission('manage', context)">Administrator</li>
                     <li><a href="${request.application_url}/profile">
                       <i class="icon-lock"></i>
                         Profil

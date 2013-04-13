@@ -32,6 +32,7 @@ def main(global_config, **settings):
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
     config.set_request_property('szcz.security.get_user', name='user', reify=True)
+    config.add_request_method('szcz.security.has_permission')
 
     config.include('pyramid_fanstatic')
     config.include('velruse.providers.google_oauth2')
