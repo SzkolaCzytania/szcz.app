@@ -46,6 +46,10 @@ class User(Base):
         else:
             return False
 
+    def available_groups(self, book):
+        groups = self.groups
+        return [group for group in groups if not [b for b in group.group.books if b.content_id == book.content_id]]
+
 
 relations = Table("relations", Base.metadata,
                   Column("source_id", Integer, ForeignKey('content.content_id'), primary_key=True),

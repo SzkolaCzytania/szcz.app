@@ -12,6 +12,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from repoze.workflow import WorkflowError
 from repoze.workflow import get_workflow
 from szcz.models import Group, GroupMember
+from szcz.models import Book
 from szcz import DBSession, views
 from szcz.resources import datatables
 
@@ -258,3 +259,16 @@ def join_group(context, request):
                             'body': u'Zostałeś członkiem grupy %s.' % context.group.name},
                             queue='success')
     return HTTPFound(location='/groups/%s' % context.group.id)
+
+
+@view_config(route_name='add_book', permission='view', request_param='book_id')
+def add_book(context, request):
+    try:
+        book = DBSession().query(Book).get(request.params.get('book_id'))
+    except SQLAlchemyError:
+        raise HTTPNotFound
+    context.group.add_book(book)
+    request.session.flash({'title': u'Gotowe!',
+                           'body': u'"%s" została dodana do grupy %s.' % (book.title, context.group.name)},
+                           queue='success')
+    return HTTPFound(location='/books/%s' % book.content_id)

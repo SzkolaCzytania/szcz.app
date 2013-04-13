@@ -7,16 +7,14 @@
 
       <div class="well">
           <ul class="nav nav-pills">
-              <li class="active"> <a href="#">Książka</a></li>
-              <li><a href="#">Grupy czytające książkę</a></li>
-              <li><a href="#">Dodatki</a></li>
-              <li tal:condition="request.user.groups" class="dropdown">
+            <li class="active"> <a href="${request.route_url('view_book', id=book.content_id)}">Książka</a></li>
+              <li tal:define="groups request.user.available_groups(book)" tal:condition="groups" class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                       Dodaj książkę do gurpy
                       <b class="caret"></b>
                   </a>
-                  <ul class="dropdown-menu">
-                      <tal:states repeat="group request.user.groups">
+                  <ul class="dropdown-menu" >
+                      <tal:states repeat="group groups">
                           <li><a href="/groups/${group.group.id}/add_book?book_id=${book.content_id}">${group.group.name}</a></li>
                       </tal:states>
                   </ul>
