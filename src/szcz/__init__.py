@@ -60,6 +60,7 @@ def main(global_config, **settings):
 
     config.add_route('favicon', '/favicon.ico')
     config.add_route('home', '/')
+    config.add_route('proxyerror', '/proxyerror')
     config.add_route('logout', '/logout')
     config.add_route('userprofile', '/profile')
 

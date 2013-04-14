@@ -63,7 +63,7 @@ handlers =
 qualname = szcz
 
 [logger_sqlalchemy]
-level = INFO
+#level = INFO
 handlers =
 qualname = sqlalchemy.engine
 # "level = INFO" logs SQL queries.
