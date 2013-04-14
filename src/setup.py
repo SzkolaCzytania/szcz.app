@@ -31,6 +31,7 @@ requires = [
     'js.deform_bootstrap',
     'repoze.workflow',
     'js.modernizr',
+    'ordereddict',
     ]
 
 setup(name='szcz',

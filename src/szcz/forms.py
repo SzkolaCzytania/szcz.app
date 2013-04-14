@@ -225,7 +225,6 @@ def edit_group(context, request):
             raise HTTPNotFound
     else:
         group = Group()
-        group.add_member(request.user, 'owner')
         is_new = True
 
     schema = GroupSchema(after_bind=maybe_remove_fields).bind(request=request, group=group)
@@ -244,6 +243,12 @@ def edit_group(context, request):
                     'group': group,
                     'main':  get_renderer('templates/master.pt').implementation()}
 
+        if 'activation_code' in request.POST:
+            group.state = u'aktywna'
+            request.session.flash({'title': u'Gotowe!',
+                                    'body': u'Grupa %s została aktywowana.' % group.name},
+                                    queue='success')
+            return HTTPFound(location='/groups/%s' % group.id)
         if appstruct['logo']:
             logo = File()
             logo.filename = appstruct['logo']['filename']
@@ -254,17 +259,12 @@ def edit_group(context, request):
             logo.size = appstruct['logo']['fp'].tell()
             appstruct['logo']['fp'].close()
             appstruct['logo'] = logo
-        if 'activation_code' in request.POST:
-            group.state = u'aktywna'
-            request.session.flash({'title': u'Gotowe!',
-                                    'body': u'Grupa %s została aktywowana.' % group.name},
-                                    queue='success')
-            return HTTPFound(location='/groups/%s' % group.id)
 
         group = merge_session_with_post(group, appstruct)
         session = DBSession()
         session.add(group)
         if is_new:
+            group.add_member(request.user, 'owner')
             request.session.flash({'title': u'Gotowe!',
                                     'body': u'Grupa %s została stworzona.' % group.name},
                                     queue='success')
