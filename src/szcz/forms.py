@@ -202,7 +202,7 @@ def manage_group_members(context, request):
         mailer.send(message)
 
         request.session.flash({'title': u'Gotowe!',
-                               'body': u'Zaproszenia zostały wysłane do: %s' % (','.join(emails))},
+                               'body': u'Zaproszenia zostały wysłane do: %s' % (', '.join(emails))},
                                queue='success')
         return HTTPFound(location='/groups/%s' % group.id)
 

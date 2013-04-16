@@ -47,6 +47,7 @@
                   </tr>
                 </tbody>
               </table>
+              <a class="" href="http://www.szkolaczytania.org.pl/resolveuid/${book.content_uid}" target="_blank">Więcej o tej książce w "Szkole Czytania"</a>
             </div>
           </div>
       </div>
