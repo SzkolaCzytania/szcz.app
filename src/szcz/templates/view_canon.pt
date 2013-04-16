@@ -7,7 +7,7 @@
 
         <h2>${canon.title}</h2>
         <img style="margin-right: 10px;" src="http://www.szkolaczytania.org.pl/${canon.authors()[0].path}/leadImage_mini" alt="${canon.title}" class="pull-left thumbnail">
-        <div tal:content="structure canon.text" />
+        <div tal:content="structure canon.text_fixed" />
         <br clear="all" />
         <div style="padding-top:10px">
         <h3>Książki w kanonie</h3>

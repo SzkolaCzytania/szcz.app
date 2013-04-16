@@ -1,7 +1,8 @@
+import uuid
+import re
 from sqlalchemy import Column, Text, String, Integer, Boolean, ForeignKey, Table, DateTime, LargeBinary, Unicode, Date
 from sqlalchemy.orm import relationship, backref, mapper
 from zope.interface import implements
-import uuid
 from szcz import Base, interfaces
 
 
@@ -116,6 +117,14 @@ class Canon(Content):
 
     def authors(self):
         return [r.target for r in self.relations if r.relationship == 'canon_author']
+
+    @property
+    def text_fixed(self):
+        def remove_img_tags(data):
+            p = re.compile(r'<img.*?/>')
+            return p.sub('', data)
+        text = remove_img_tags(self.text)
+        return text
 
 
 class Author(Content):
